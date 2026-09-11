@@ -3,6 +3,7 @@ name = "job-pipeline"
 version = "0.1.0"
 description = "Core library and browser app for tracking a job search pipeline."
 requires-python = ">=3.11"
+license = "MIT"
 dependencies = [
     "pyyaml>=6.0",
     "flask>=3.0",

@@ -33,3 +33,7 @@ M1–M5 are in place: the core library, the Discovery review queue, the
 drag-and-drop board with mtime conflict handling, and card detail (notes,
 contacts, referral, an editable history timeline). Per `docs/ARCHITECTURE.md`
 §11, M5 is the last milestone — the tool is finished, not paused.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
