@@ -78,16 +78,22 @@ def save(card: Card, expected_mtime: float | None, root: Path = DATA_DIR) -> flo
     return path.stat().st_mtime
 
 
-def review(card_id: str, interested: bool, root: Path = DATA_DIR, today: date | None = None) -> Card:
+def review(
+    card_id: str,
+    interested: bool,
+    note: str = "",
+    root: Path = DATA_DIR,
+    today: date | None = None,
+) -> Card:
     """The seam: inbox/ -> cards/. Seeds history. Never touches an existing cards/ file."""
     inbox_path = root / INBOX / f"{card_id}.yaml"
     with inbox_path.open() as f:
         card = Card.from_dict(yaml.safe_load(f))
 
     if interested:
-        move(card, "shortlist", occurred=today)
+        move(card, "shortlist", note=note, occurred=today)
     else:
-        move(card, "archived", reason="passed", occurred=today)
+        move(card, "archived", reason="passed", note=note, occurred=today)
 
     _write_atomic(root / CARDS / f"{card.id}.yaml", card.to_dict())
     inbox_path.unlink()

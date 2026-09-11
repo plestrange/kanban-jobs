@@ -8,7 +8,7 @@ init:
 	@echo "data/ ready; pre-commit hook installed. Edit data/criteria.yaml and write data/profile.md next."
 
 dev:
-	FLASK_APP=app/server.py FLASK_DEBUG=1 flask run
+	FLASK_APP=app.server FLASK_DEBUG=1 flask run
 
 test:
 	pytest

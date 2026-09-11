@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Discovery — Job Pipeline{% endblock %}
+
+{% block content %}
+<div class="toolbar">
+  <div class="field">
+    <label for="loc-filter">Location</label>
+    <select id="loc-filter">
+      <option value="all">Anywhere</option>
+      <option value="remote">Remote</option>
+      <option value="hybrid">Hybrid</option>
+      <option value="onsite">Onsite</option>
+    </select>
+  </div>
+  <div class="spacer"></div>
+  <p class="hint">↑↓ select a row · <kbd>i</kbd> interested · <kbd>p</kbd> pass</p>
+</div>
+
+<div id="rows" class="rows">
+  {% for card in cards %}
+  <article class="row t-{{ card.assessment.tier }}" data-id="{{ card.id }}" data-loc="{{ card.location.mode }}" tabindex="0">
+    <div class="rowmain">
+      <div class="rowhead">
+        <span class="tier-badge tier-{{ card.assessment.tier }}">{{ card.assessment.tier }}</span>
+        <span class="co">{{ card.company }}</span>
+        <span class="ti">{{ card.title }}</span>
+      </div>
+      <div class="meta">
+        <span class="chip comp">{{ card.comp | comp_text }}</span>
+        <span class="chip">{{ card.location.mode }} · {{ card.location.scope }}</span>
+        {% if card.team %}<span class="chip track">{{ card.team }}</span>{% endif %}
+      </div>
+      <p class="why"><b>Why</b>{{ card.assessment.why }}</p>
+      <p class="gap"><b>Gap</b>{{ card.assessment.gap }}</p>
+    </div>
+    <div class="rowside">
+      {% if card.url %}<a class="applylink" href="{{ card.url }}" target="_blank" rel="noopener">Open posting</a>{% endif %}
+      <div class="rowactions">
+        <button class="btn" data-act="interested">Interested</button>
+        <button class="btn ghost" data-act="pass">Pass</button>
+      </div>
+      <div class="passnote" hidden>
+        <input type="text" placeholder="Note (optional, Enter to confirm)" aria-label="Pass note">
+      </div>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+
+<p id="empty" class="empty" {% if cards %}hidden{% endif %}>Queue is empty — nothing waiting for review.</p>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='discovery.js') }}"></script>
+{% endblock %}
