@@ -1,6 +1,6 @@
-project = "Job Pipeline"
+project = "Kanban Jobs"
 copyright = "2026"
-author = "Job Pipeline"
+author = "Patrick Lestrange"
 
 extensions = ["myst_parser"]
 source_suffix = {".rst": "restructuredtext", ".md": "markdown"}

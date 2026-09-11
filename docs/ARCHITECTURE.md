@@ -1,4 +1,4 @@
-# Job Pipeline — Architecture Plan
+# Kanban Jobs — Architecture Plan
 
 **Status:** decided — ready to hand to a desktop session to build
 **Date:** 6 September 2026
@@ -660,7 +660,7 @@ The running app is the only interface. `make dev`, `127.0.0.1`, done.
 ## 7. Repo layout
 
 ```
-job-pipeline/
+kanban-jobs/
   README.md
   .gitignore
   pyproject.toml

@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{% block title %}Job Pipeline{% endblock %}</title>
+<title>{% block title %}Kanban Jobs{% endblock %}</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
 </head>
 <body>
 <nav class="nav">
-  <span class="nav-brand">Job Pipeline</span>
+  <span class="nav-brand">Kanban Jobs</span>
   <a class="nav-tab{{ ' active' if active == 'discovery' else '' }}" href="{{ url_for('discovery') }}">Discovery</a>
   <a class="nav-tab{{ ' active' if active == 'board' else '' }}" href="{{ url_for('board') }}">Board</a>
 </nav>

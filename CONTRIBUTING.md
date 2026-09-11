@@ -12,7 +12,7 @@ matching interpreter itself if you don't already have one.
 
 ```
 git clone <your fork>
-cd job-pipeline
+cd kanban-jobs
 make venv   # uv sync — creates .venv from the pinned versions in uv.lock
 source .venv/bin/activate
 make init   # sets up data/ and installs the pre-commit hook
