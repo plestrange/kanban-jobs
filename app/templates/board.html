@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Board — Job Pipeline{% endblock %}
+
+{% block content %}
+<div class="board">
+  {% for stage in board_stages %}
+  <section class="col">
+    <header class="col-head">
+      <h2>{{ stage.replace('-', ' ') | title }}</h2>
+      <span class="col-count">{{ columns[stage] | length }}</span>
+    </header>
+    <div class="col-body">
+      {% for card in columns[stage] %}
+      <article class="card">
+        <div class="card-co">{{ card.company }}</div>
+        <div class="card-ti">{{ card.title }}</div>
+        {% if card.url %}<a class="card-link" href="{{ card.url }}" target="_blank" rel="noopener">Posting ↗</a>{% endif %}
+        <div class="card-foot">
+          <span class="days">{{ card | days_in_stage(today) }} days</span>
+          {% if card.referral.status != 'none' %}<span class="badge-referral">referral</span>{% endif %}
+        </div>
+      </article>
+      {% else %}
+      <p class="col-empty">—</p>
+      {% endfor %}
+    </div>
+  </section>
+  {% endfor %}
+</div>
+
+<details class="archive-lane">
+  <summary>Archived <span class="col-count">{{ archived | length }}</span></summary>
+  <div class="archive-rows">
+    {% for card in archived %}
+    <article class="card is-archived">
+      <div class="card-co">{{ card.company }}</div>
+      <div class="card-ti">{{ card.title }}</div>
+      {% if card.url %}<a class="card-link" href="{{ card.url }}" target="_blank" rel="noopener">Posting ↗</a>{% endif %}
+      <div class="card-foot">
+        <span class="days">{{ card | days_in_stage(today) }} days</span>
+        <span class="chip">{{ card.reason }}</span>
+      </div>
+    </article>
+    {% else %}
+    <p class="col-empty">Nothing archived yet.</p>
+    {% endfor %}
+  </div>
+</details>
+{% endblock %}

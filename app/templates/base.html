@@ -10,7 +10,7 @@
 <nav class="nav">
   <span class="nav-brand">Job Pipeline</span>
   <a class="nav-tab{{ ' active' if active == 'discovery' else '' }}" href="{{ url_for('discovery') }}">Discovery</a>
-  <span class="nav-tab disabled" title="Coming in M3">Board</span>
+  <a class="nav-tab{{ ' active' if active == 'board' else '' }}" href="{{ url_for('board') }}">Board</a>
 </nav>
 <main id="main">
 {% block content %}{% endblock %}

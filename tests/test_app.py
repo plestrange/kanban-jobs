@@ -17,10 +17,25 @@ def client(tmp_path):
     return app.test_client()
 
 
-def test_index_redirects_to_discovery(client):
+def test_index_redirects_to_board(client):
     res = client.get("/")
     assert res.status_code == 302
-    assert res.headers["Location"].endswith("/discovery")
+    assert res.headers["Location"].endswith("/board")
+
+
+def test_board_groups_cards_by_stage(client):
+    res = client.get("/board")
+    assert res.status_code == 200
+    body = res.get_data(as_text=True)
+    assert "Acme Robotics" in body  # stage: technical
+    assert "Globex Corporation" in body  # stage: applied
+    assert "Initech" in body  # stage: archived, shown in the collapsed lane
+
+
+def test_board_shows_days_in_stage(client):
+    res = client.get("/board")
+    body = res.get_data(as_text=True)
+    assert "days</span>" in body
 
 
 def test_discovery_page_lists_inbox_cards(client):

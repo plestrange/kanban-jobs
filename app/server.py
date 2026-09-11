@@ -1,12 +1,15 @@
 from __future__ import annotations
 
+from datetime import date
 from pathlib import Path
 
 from flask import Flask, abort, jsonify, redirect, render_template, request, url_for
 
 from core import store, views
 from core.config import DATA_DIR
-from core.models import Card
+from core.models import STAGES, Card
+
+BOARD_STAGES = [s for s in STAGES if s != "archived"]
 
 
 def _comp_text(comp) -> str:
@@ -42,14 +45,28 @@ def create_app(root: Path = DATA_DIR) -> Flask:
     app = Flask(__name__)
     app.config["DATA_ROOT"] = root
     app.jinja_env.filters["comp_text"] = _comp_text
+    app.jinja_env.filters["days_in_stage"] = views.days_in_stage
 
     def data_root() -> Path:
         return app.config["DATA_ROOT"]
 
     @app.get("/")
     def index():
-        # -> /board once M3 exists
-        return redirect(url_for("discovery"))
+        return redirect(url_for("board"))
+
+    @app.get("/board")
+    def board():
+        cards = store.load_cards(root=data_root())
+        columns = views.board(cards)
+        archived = columns.pop("archived")
+        return render_template(
+            "board.html",
+            active="board",
+            board_stages=BOARD_STAGES,
+            columns=columns,
+            archived=archived,
+            today=date.today(),
+        )
 
     @app.get("/discovery")
     def discovery():

@@ -88,3 +88,26 @@ select{background:var(--surface);border:1px solid var(--line-2);border-radius:3p
 .empty{padding:22px 14px;color:var(--ink-3);font-style:italic;text-align:center}
 
 @media (max-width:720px){.row{grid-template-columns:minmax(0,1fr)}}
+
+.board{display:flex;gap:14px;overflow-x:auto;padding:22px 0 8px;margin:0 0 8px}
+.col{flex:0 0 200px;display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:4px;max-height:70vh}
+.col-head{display:flex;align-items:baseline;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--line)}
+.col-head h2{margin:0;font-size:13px;font-weight:600;letter-spacing:-.005em}
+.col-count{font-family:ui-monospace,monospace;font-size:11px;color:var(--ink-3)}
+.col-body{display:flex;flex-direction:column;gap:8px;padding:10px;overflow-y:auto}
+.col-empty{margin:8px 0;color:var(--ink-3);font-size:12px;font-style:italic;text-align:center}
+
+.card{background:var(--surface-2);border:1px solid var(--line);border-radius:3px;padding:9px 10px}
+.card-co{font-weight:700;font-size:13px}
+.card-ti{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.card-foot{display:flex;align-items:center;gap:8px;margin-top:7px}
+.days{font-family:ui-monospace,monospace;font-size:11px;color:var(--ink-3)}
+.badge-referral{font-size:10px;letter-spacing:.05em;text-transform:uppercase;background:var(--good-soft);color:var(--good);padding:2px 6px;border-radius:2px}
+.card.is-archived{opacity:.7}
+
+.archive-lane{margin-top:8px}
+.archive-lane summary{cursor:pointer;font-weight:600;font-size:13px;color:var(--ink-2);padding:8px 4px}
+.archive-rows{display:flex;flex-wrap:wrap;gap:10px;padding:10px 4px}
+.archive-rows .card{flex:0 0 200px}
+
+@media (max-width:720px){.col{flex:0 0 78vw}}
