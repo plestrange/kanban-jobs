@@ -67,6 +67,10 @@ def _write_atomic(path: Path, data: dict) -> None:
         raise
 
 
+def mtime(card_id: str, root: Path = DATA_DIR) -> float:
+    return (root / CARDS / f"{card_id}.yaml").stat().st_mtime
+
+
 def save(card: Card, expected_mtime: float | None, root: Path = DATA_DIR) -> float:
     """Write a card to cards/. Raises ConflictError if it changed on disk since load."""
     path = root / CARDS / f"{card.id}.yaml"

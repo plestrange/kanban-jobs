@@ -25,6 +25,7 @@ discovery sweep.
 
 ## Status
 
-M1 (core library) is in place: `core/config.py`, `models.py`, `store.py`,
-`pipeline.py`, `views.py`, with tests including `test_boundary.py`. No UI yet
-— see `ARCHITECTURE.md` §11 for the build order.
+M1–M3 are in place: the core library (`core/config.py`, `models.py`,
+`store.py`, `pipeline.py`, `views.py`), the Discovery review queue, and a
+read-only, server-rendered board. M4 (drag-and-drop) is next — see
+`ARCHITECTURE.md` §11 for the build order.

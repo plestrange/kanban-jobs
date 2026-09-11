@@ -9,9 +9,9 @@
       <h2>{{ stage.replace('-', ' ') | title }}</h2>
       <span class="col-count">{{ columns[stage] | length }}</span>
     </header>
-    <div class="col-body">
+    <div class="col-body" data-dropzone data-stage="{{ stage }}">
       {% for card in columns[stage] %}
-      <article class="card">
+      <article class="card" draggable="true" data-id="{{ card.id }}" data-stage="{{ stage }}" data-mtime="{{ mtimes[card.id] }}">
         <div class="card-co">{{ card.company }}</div>
         <div class="card-ti">{{ card.title }}</div>
         {% if card.url %}<a class="card-link" href="{{ card.url }}" target="_blank" rel="noopener">Posting ↗</a>{% endif %}
@@ -20,9 +20,8 @@
           {% if card.referral.status != 'none' %}<span class="badge-referral">referral</span>{% endif %}
         </div>
       </article>
-      {% else %}
-      <p class="col-empty">—</p>
       {% endfor %}
+      <p class="col-empty" {% if columns[stage] %}hidden{% endif %}>—</p>
     </div>
   </section>
   {% endfor %}
@@ -30,20 +29,28 @@
 
 <details class="archive-lane">
   <summary>Archived <span class="col-count">{{ archived | length }}</span></summary>
-  <div class="archive-rows">
+  <div class="archive-rows" data-dropzone data-stage="archived">
     {% for card in archived %}
-    <article class="card is-archived">
+    <article class="card is-archived" draggable="true" data-id="{{ card.id }}" data-stage="archived" data-mtime="{{ mtimes[card.id] }}">
       <div class="card-co">{{ card.company }}</div>
       <div class="card-ti">{{ card.title }}</div>
       {% if card.url %}<a class="card-link" href="{{ card.url }}" target="_blank" rel="noopener">Posting ↗</a>{% endif %}
+      {% if card.history and card.history[-1].note %}<p class="card-note">{{ card.history[-1].note }}</p>{% endif %}
       <div class="card-foot">
         <span class="days">{{ card | days_in_stage(today) }} days</span>
         <span class="chip">reason: {{ card.reason }}</span>
       </div>
     </article>
-    {% else %}
-    <p class="col-empty">Nothing archived yet.</p>
     {% endfor %}
+    <p class="col-empty" {% if archived %}hidden{% endif %}>Nothing archived yet.</p>
   </div>
 </details>
+
+<template id="reason-options">
+  {% for r in archive_reasons %}<option value="{{ r }}">{{ r }}</option>{% endfor %}
+</template>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='board.js') }}"></script>
 {% endblock %}
