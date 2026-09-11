@@ -38,7 +38,7 @@
       {% if card.url %}<a class="card-link" href="{{ card.url }}" target="_blank" rel="noopener">Posting ↗</a>{% endif %}
       <div class="card-foot">
         <span class="days">{{ card | days_in_stage(today) }} days</span>
-        <span class="chip">{{ card.reason }}</span>
+        <span class="chip">reason: {{ card.reason }}</span>
       </div>
     </article>
     {% else %}
