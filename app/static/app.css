@@ -79,7 +79,7 @@ select{background:var(--surface);border:1px solid var(--line-2);border-radius:3p
 .applylink:hover{border-color:var(--accent);background:var(--accent-soft)}
 .rowactions{display:flex;gap:8px}
 .btn{font-weight:600;font-size:13px;padding:7px 12px;border-radius:3px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;flex:1}
-:root:not([data-theme="light"]) .btn{color:#0F1413}
+:root:not([data-theme="light"]) .btn:not(.ghost){color:#0F1413}
 .btn.ghost{background:transparent;color:var(--ink-2);border-color:var(--line-2)}
 .btn:disabled{opacity:.5;cursor:default}
 .passnote input{width:100%;border:1px solid var(--line-2);border-radius:3px;padding:6px 8px;font-size:13px;background:var(--surface)}
