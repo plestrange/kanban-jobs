@@ -4,9 +4,7 @@ DATA_PATTERN := ^(data/|config/criteria\.yaml$$)
 
 venv:
 	rm -rf .venv
-	python3 -m venv .venv
-	.venv/bin/pip install --upgrade pip
-	.venv/bin/pip install -r requirements-dev.txt
+	uv sync
 	@echo "venv ready on $$(.venv/bin/python3 --version) — activate with: source .venv/bin/activate"
 
 init:

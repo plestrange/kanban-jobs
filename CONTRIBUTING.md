@@ -7,16 +7,21 @@ no staleness flags") are already answered there, with the reasoning.
 
 ## Setup
 
-Requires Python 3.11+ (this repo pins 3.12 via `.python-version` if you use
-[pyenv](https://github.com/pyenv/pyenv)).
+Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/) — uv will fetch a
+matching interpreter itself if you don't already have one.
 
 ```
 git clone <your fork>
 cd job-pipeline
-make venv   # creates .venv and installs everything from requirements-dev.txt
+make venv   # uv sync — creates .venv from the pinned versions in uv.lock
 source .venv/bin/activate
 make init   # sets up data/ and installs the pre-commit hook
 ```
+
+`uv.lock` pins exact versions of every dependency, direct and transitive —
+that's what CI installs from too, so what passes locally is what runs there.
+Changed a dependency in `pyproject.toml`? Run `uv lock` and commit the
+updated `uv.lock` alongside it.
 
 The pre-commit hook exists to stop `data/` (personal search data) from ever
 being committed — see `docs/ARCHITECTURE.md` §9. Keep it installed even

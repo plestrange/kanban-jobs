@@ -19,8 +19,8 @@ discovery sweep.
 
 ## Commands
 
-- `make venv` — (re)create `.venv` from `requirements-dev.txt`, using
-  whatever `python3` resolves to (3.12 if pinned via pyenv)
+- `make venv` — (re)create `.venv` via `uv sync`, from the pinned versions
+  in `uv.lock`
 - `make dev` — run the app
 - `make test` — run the test suite and check no data/ paths are tracked
 - `make check-clean` — just the data/ tracking check

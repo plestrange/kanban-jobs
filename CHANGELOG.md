@@ -14,11 +14,15 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Sphinx documentation (`make docs`, `make docs-serve`), with `myst-parser`
   rendering `docs/ARCHITECTURE.md` and `docs/DISCOVERY.md` directly.
 - `make lint` (ruff) and `make typecheck` (mypy).
+- `make venv`, backed by `uv` and `uv.lock` — exact, reproducible dependency
+  versions instead of `>=` floors, used identically by local dev and CI.
 
 ### Changed
 
-- Machine-wide Python management moved to pyenv, pinned to 3.12.14
-  (`.python-version`).
+- Machine-wide Python management moved to pyenv (global default 3.12.14);
+  the interpreter version for this project itself is governed by
+  `pyproject.toml`'s `requires-python` and resolved by `uv`, not a tracked
+  `.python-version` file.
 - `core/` renamed to `src/`.
 - `ARCHITECTURE.md` and `DISCOVERY.md` moved into `docs/`.
 - `hooks/pre-commit` and `scripts/check-clean.sh` folded into Makefile
