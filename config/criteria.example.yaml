@@ -1,0 +1,31 @@
+# Copied to data/criteria.yaml by `make init`. Edit the copy, not this file —
+# this one ships in git as the schema; yours is gitignored (ARCHITECTURE.md §9).
+
+version: v1
+
+titles: [Data Scientist, MLOps Engineer, ML Engineer]
+title_aliases:
+  [ML Platform Engineer, ML Infrastructure Engineer, Senior Software Engineer ML Systems]
+
+level: {min: senior, target: lead}
+
+location:
+  accept: [remote-us, seattle-hybrid]
+  reject: [onsite-only, relocation, state-restricted-remote, non-pacific-hours]
+
+exclusions:
+  - {id: employer, values: []}
+  - {id: sector, values: []}
+  - {id: on-call, rule: "reject roles built around an on-call rotation"}
+
+# Companies polled directly via their ATS API, regardless of whether a
+# search surfaces them. See DISCOVERY.md Phase 2.
+watchlist:
+  - {company: "example-co", ats: greenhouse, token: "example-co"}
+
+fit_rubric:
+  axes: [content_match, level_match, location_match]
+  tiers: {strong: "all three", good: "two of three", out: "fails a hard filter"}
+  drop: "technical content that is a genuine reach is dropped, not ranked"
+
+candor: "name the specific skill gap per role; do not soften"

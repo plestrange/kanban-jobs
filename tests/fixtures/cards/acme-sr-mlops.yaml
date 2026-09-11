@@ -1,0 +1,32 @@
+id: acme-sr-mlops
+req_id: "9001234567"
+company: Acme Robotics
+title: Senior MLOps Engineer
+team: "Platform"
+location: {mode: remote, scope: "US, Canada", eligible: true}
+comp: {min: 166600, max: 208300, currency: USD, source: posted}
+url: https://job-boards.greenhouse.io/acme/jobs/9001234567
+url_kind: ats
+discovered: {date: 2026-08-10, via: "greenhouse search", rubric: v1}
+assessment:
+  tier: strong
+  why: >
+    Real-time inference service, model registry and staged rollouts.
+  gap: >
+    Kafka streaming is a named requirement and isn't on the resume.
+
+stage: technical
+reason: null
+history:
+  - {occurred: 2026-08-12, recorded: 2026-08-12, to: shortlist, note: ""}
+  - {occurred: 2026-08-14, recorded: 2026-08-14, to: applied, note: ""}
+  - {occurred: 2026-08-20, recorded: 2026-08-21, to: informational, note: "30min recruiter call"}
+  - {occurred: 2026-08-27, recorded: 2026-08-28, to: technical, note: "systems design, 90min"}
+contacts:
+  - {name: "Jordan Rivas", role: recruiter, note: ""}
+referral:
+  status: none
+  via: ""
+  checked: null
+notes: |
+  Prep: review staged-rollout design, ask about on-call rotation.

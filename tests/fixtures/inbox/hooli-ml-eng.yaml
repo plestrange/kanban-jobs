@@ -1,0 +1,16 @@
+id: hooli-ml-eng
+req_id: "hj-33210"
+company: Hooli
+title: ML Engineer
+team: null
+location: {mode: remote, scope: "US", eligible: true}
+comp: {min: 143000, max: 197000, currency: USD, source: posted}
+url: https://jobs.lever.co/hooli/hj-33210
+url_kind: ats
+discovered: {date: 2026-09-07, via: "aggregator: builtin", rubric: v1}
+assessment:
+  tier: good
+  why: >
+    Fully remote, production ML deployment with mentoring and code review.
+  gap: >
+    RAG and vector databases are required, not preferred.

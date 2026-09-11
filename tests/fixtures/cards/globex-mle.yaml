@@ -1,0 +1,28 @@
+id: globex-mle
+req_id: "jr2044091"
+company: Globex Corporation
+title: Machine Learning Engineer III
+team: null
+location: {mode: hybrid, scope: "Seattle", eligible: true}
+comp: {min: 146000, max: 252000, currency: USD, source: posted}
+url: https://globex.wd1.myworkdayjobs.com/careers/job/jr2044091
+url_kind: ats
+discovered: {date: 2026-09-01, via: "watchlist: globex", rubric: v1}
+assessment:
+  tier: good
+  why: >
+    Batch and real-time ML pipelines with MLOps named in the requirements.
+  gap: >
+    Level III likely sits below the target level.
+
+stage: applied
+reason: null
+history:
+  - {occurred: 2026-09-03, recorded: 2026-09-03, to: shortlist, note: ""}
+  - {occurred: 2026-09-05, recorded: 2026-09-05, to: applied, note: ""}
+contacts: []
+referral:
+  status: possible
+  via: "Sam Ortiz — former colleague, now on the platform team"
+  checked: 2026-09-05
+notes: ""

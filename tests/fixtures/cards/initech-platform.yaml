@@ -1,0 +1,27 @@
+id: initech-platform
+req_id: "5588123"
+company: Initech
+title: Staff MLOps Engineer
+team: null
+location: {mode: remote, scope: "US", eligible: true}
+comp: {min: 200000, max: 270000, currency: USD, source: posted}
+url: https://jobs.lever.co/initech/5588123
+url_kind: ats
+discovered: {date: 2026-07-15, via: "greenhouse search", rubric: v1}
+assessment:
+  tier: strong
+  why: >
+    Staff-level scope with mentoring built into the role.
+  gap: >
+    Kubernetes and GPU cluster management are core requirements.
+
+stage: archived
+reason: rejected
+history:
+  - {occurred: 2026-07-16, recorded: 2026-07-16, to: shortlist, note: ""}
+  - {occurred: 2026-07-18, recorded: 2026-07-18, to: applied, note: ""}
+  - {occurred: 2026-07-25, recorded: 2026-07-25, to: informational, note: ""}
+  - {occurred: 2026-08-05, recorded: 2026-08-06, to: archived, note: "rejected after recruiter screen"}
+contacts: []
+referral: {status: none, via: "", checked: null}
+notes: ""

@@ -1,0 +1,18 @@
+id: umbrella-mlops
+req_id: "7712004"
+company: Umbrella Analytics
+title: Senior Machine Learning Operations Engineer
+team: "Risk Platform"
+location: {mode: remote, scope: "US, Canada", eligible: true}
+comp: {min: 170000, max: 210000, currency: USD, source: posted}
+url: https://job-boards.greenhouse.io/umbrella/jobs/7712004
+url_kind: ats
+discovered: {date: 2026-09-06, via: "greenhouse search", rubric: v1}
+assessment:
+  tier: strong
+  why: >
+    Model lifecycle from training through monitoring, with an explicit
+    mandate to strengthen testing and documentation practice.
+  gap: >
+    Databricks and Terraform are named stack; you have the equivalents but
+    not those specific tools.

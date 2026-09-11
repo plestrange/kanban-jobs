@@ -1,0 +1,10 @@
+data/
+config/criteria.yaml
+*.local.yaml
+.env
+
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+.venv/

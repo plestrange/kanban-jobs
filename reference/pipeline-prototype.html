@@ -1,0 +1,474 @@
+<title>Lestrange Role Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link id="app-fonts" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap">
+<style id="app-style">
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+
+:root{
+  --ground:#F4F6F3;
+  --surface:#FFFFFF;
+  --surface-2:#E9EDE8;
+  --ink:#13191A;
+  --ink-2:#495553;
+  --ink-3:#7A8583;
+  --line:#D9DED7;
+  --line-2:#C4CBC2;
+  --accent:#1D5E57;
+  --accent-soft:#DBE8E4;
+  --signal:#A2571C;
+  --signal-soft:#F1E3D5;
+  --good:#2C6A48;
+  --good-soft:#DCE9DF;
+  --dim:#6F7A78;
+  --dim-soft:#E4E7E2;
+  --shadow:0 1px 2px rgba(19,25,26,.05),0 6px 18px -12px rgba(19,25,26,.28);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#0F1413;
+    --surface:#161C1B;
+    --surface-2:#1D2422;
+    --ink:#E7ECE9;
+    --ink-2:#A2AEAB;
+    --ink-3:#78837F;
+    --line:#28302E;
+    --line-2:#3A4340;
+    --accent:#5EB5A7;
+    --accent-soft:#17322E;
+    --signal:#D4924F;
+    --signal-soft:#332416;
+    --good:#6CBE91;
+    --good-soft:#16301F;
+    --dim:#8C9895;
+    --dim-soft:#212826;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 22px -14px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0F1413;
+  --surface:#161C1B;
+  --surface-2:#1D2422;
+  --ink:#E7ECE9;
+  --ink-2:#A2AEAB;
+  --ink-3:#78837F;
+  --line:#28302E;
+  --line-2:#3A4340;
+  --accent:#5EB5A7;
+  --accent-soft:#17322E;
+  --signal:#D4924F;
+  --signal-soft:#332416;
+  --good:#6CBE91;
+  --good-soft:#16301F;
+  --dim:#8C9895;
+  --dim-soft:#212826;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 22px -14px rgba(0,0,0,.7);
+}
+
+body{
+  background:var(--ground);
+  color:var(--ink);
+  font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:15px;
+  line-height:1.5;
+}
+#app{max-width:1140px;margin:0 auto;padding:28px 20px 72px}
+
+.masthead{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between;padding-bottom:18px;border-bottom:2px solid var(--ink)}
+.masthead h1{font-family:Archivo,system-ui,sans-serif;font-weight:700;font-size:clamp(26px,4vw,36px);line-height:1.05;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.masthead .sub{margin:6px 0 0;color:var(--ink-2);max-width:62ch}
+.stamp{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+
+.counters{display:flex;gap:0;flex-wrap:wrap;border:1px solid var(--line);border-radius:3px;overflow:hidden;background:var(--surface)}
+.counter{padding:8px 14px;border-right:1px solid var(--line);min-width:74px}
+.counter:last-child{border-right:0}
+.counter b{display:block;font-family:"IBM Plex Mono",monospace;font-size:19px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.2}
+.counter span{font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:flex-end;margin:22px 0 6px;padding:14px 16px;background:var(--surface);border:1px solid var(--line);border-radius:4px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field > label{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3)}
+select,.notes{background:var(--surface);border:1px solid var(--line-2);border-radius:3px;padding:6px 9px;color:var(--ink)}
+select{min-width:150px}
+.toolbar .spacer{flex:1 1 auto}
+
+.savebar{display:flex;align-items:center;gap:12px}
+.btn{font-family:Archivo,system-ui,sans-serif;font-weight:600;font-size:13.5px;padding:8px 16px;border-radius:3px;border:1px solid var(--accent);background:var(--accent);color:var(--surface);cursor:pointer}
+:root[data-theme="dark"] .btn,:root:not([data-theme="light"]) .btn{color:#0F1413}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .btn{color:#fff}}
+.btn[disabled]{opacity:.4;cursor:default}
+.btn.ghost{background:transparent;color:var(--ink-2);border-color:var(--line-2)}
+.savenote{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-3)}
+.savenote.dirty{color:var(--signal)}
+
+.tier{margin-top:34px}
+.tier-head{display:flex;align-items:baseline;gap:12px;padding-bottom:8px;border-bottom:1px solid var(--line-2)}
+.tier-head h2{font-family:Archivo,system-ui,sans-serif;font-weight:600;font-size:17px;letter-spacing:-.01em;margin:0}
+.tier-head p{margin:0;color:var(--ink-3);font-size:13px;flex:1 1 220px}
+.tier-count{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+
+.rows{display:flex;flex-direction:column;gap:0}
+.row{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:8px 22px;padding:16px 4px 16px 14px;border-bottom:1px solid var(--line);position:relative}
+.row::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:2px;background:var(--rail,transparent)}
+.row.t-strong{--rail:var(--good)}
+.row.t-good{--rail:var(--accent)}
+.row.t-stretch{--rail:var(--signal)}
+.row.t-out{--rail:var(--dim)}
+.row.is-done{opacity:.55}
+
+.rowhead{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px}
+.co{font-family:Archivo,system-ui,sans-serif;font-weight:700;font-size:16px;letter-spacing:-.01em}
+.ti{font-size:15px;color:var(--ink-2)}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.chip{font-family:"IBM Plex Mono",monospace;font-size:11px;padding:2px 7px;border-radius:2px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.chip.comp{background:var(--accent-soft);color:var(--accent);font-variant-numeric:tabular-nums}
+.chip.track{background:transparent;border:1px solid var(--line-2);color:var(--ink-3)}
+.chip.flag{background:var(--signal-soft);color:var(--signal)}
+.why{margin:9px 0 0;max-width:70ch}
+.why b{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:500;margin-right:6px}
+.gap{margin:5px 0 0;max-width:70ch;color:var(--ink-2);font-size:14px}
+.gap b{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);font-weight:500;margin-right:6px}
+
+.rowside{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.rowside select{width:100%;min-width:0;font-size:13.5px}
+.applylink{font-family:Archivo,sans-serif;font-weight:600;font-size:13px;text-align:center;padding:7px 10px;border:1px solid var(--line-2);border-radius:3px;color:var(--accent);text-decoration:none}
+.applylink:hover{border-color:var(--accent);background:var(--accent-soft)}
+.notes{width:100%;min-height:46px;resize:vertical;font-size:13.5px;line-height:1.4}
+.notes::placeholder{color:var(--ink-3)}
+
+.status-applied,.status-screening,.status-interview,.status-offer{border-color:var(--accent)}
+.status-passed,.status-rejected{border-color:var(--line)}
+
+.empty{padding:22px 14px;color:var(--ink-3);font-style:italic}
+.foot{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);color:var(--ink-3);font-size:13px;max-width:76ch}
+.foot p{margin:0 0 8px}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:720px){
+  .row{grid-template-columns:minmax(0,1fr)}
+  .rowside{flex-direction:row;flex-wrap:wrap}
+  .rowside select{flex:1 1 150px}
+  .notes{flex:1 1 100%}
+}
+</style>
+
+<div id="app"></div>
+
+<script id="app-state" type="application/json">{"status":{"vinci4d":"interview"},"notes":{"vinci4d":"Already in process — Palo Alto, semiconductor physics-AI simulation."},"saved":null}</script>
+
+<script id="app-code">
+var DOC_TITLE = "Lestrange Role Pipeline";
+var FONT_HREF = "https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;600&display=swap";
+
+var STATUSES = [
+  ["new","Not started"],
+  ["interested","Interested"],
+  ["applied","Applied"],
+  ["screening","Recruiter screen"],
+  ["interview","Interviewing"],
+  ["offer","Offer"],
+  ["passed","Passed on it"],
+  ["rejected","Rejected"]
+];
+var DONE = {passed:1,rejected:1};
+
+var TIERS = [
+  ["strong","Strong fit","Content, level and location all line up. Apply first."],
+  ["good","Good fit","Two of the three line up — worth a real application with a tailored angle."],
+  ["out","Screened out","Matched the search but fails a filter. Listed so you don't rediscover them."]
+];
+
+var JOBS = [
+  {id:"vinci4d",co:"Vinci4D",ti:"Data Scientist",track:"Data Science",loc:"Palo Alto",comp:"—",tier:"strong",
+   why:"Already in your pipeline. Physics-AI simulation for semiconductors — a PhD in computational physical chemistry is the rare qualification here, not a nice-to-have.",
+   gap:"Palo Alto-based; confirm the remote arrangement before it gets far.",url:"",flag:"in progress"},
+
+  {id:"mercury",co:"Mercury",ti:"Senior Machine Learning Operations Engineer",track:"MLOps",loc:"Remote · US/Canada",comp:"$166.6k–$208.3k",tier:"strong",
+   why:"Real-time inference service, model registry and staged rollouts, drift detection, and owning the handoff from data scientists into production. That is a line-by-line restatement of your Climate work.",
+   gap:"Kafka/Kinesis streaming and Redis/DynamoDB stores are named requirements and aren't on your resume.",url:"https://job-boards.greenhouse.io/mercury/jobs/6097372004"},
+
+  {id:"hungryroot",co:"Hungryroot",ti:"Senior Machine Learning Operations Engineer",track:"MLOps",loc:"Remote · US",comp:"$170k–$210k",tier:"strong",
+   why:"Model lifecycle from training through monitoring, plus an explicit mandate to strengthen engineering practice through testing and documentation — your Code Quality & Lifecycle team, as a job posting.",
+   gap:"Databricks, MLflow and Terraform are the named stack. You have the equivalents (Spark, Airflow, CI/CD) but not those tools. No visa sponsorship.",url:"https://job-boards.greenhouse.io/hungryroot/jobs/6141572004"},
+
+  {id:"sumersports",co:"SumerSports",ti:"MLOps / ML Platform Engineer",track:"MLOps",loc:"Remote · US",comp:"$170k–$200k",tier:"strong",
+   why:"Reproducible training pipelines with versioning and artifact tracking, serving APIs, SLOs, CI/CD and infrastructure-as-code — a whole platform sized for one owner. Asks 4+ years against your eight.",
+   gap:"Kubernetes and GPU cluster management are core to the role and absent from your resume.",url:"https://ats.rippling.com/sumersports/jobs/865ada60-98e0-4c60-867d-7765474132cb"},
+
+  {id:"expedia-layla",co:"Expedia Group",ti:"Senior AI/ML Data Engineer — Layla AI",track:"ML Engineer",loc:"Seattle · Hybrid",comp:"$185k–$295k",tier:"strong",
+   why:"Data pipelines and infrastructure feeding ML systems, in Seattle, at a comp band well above the remote MLOps postings. Pipeline-and-platform work rather than modeling.",
+   gap:"GenAI product context; confirm how many days on site.",url:"https://www.builtinseattle.com/job/senior-ai-ml-data-engineer-layla-ai/10943067"},
+
+  {id:"sailpoint",co:"SailPoint",ti:"Staff Machine Learning Engineer",track:"ML Engineer",loc:"Remote or Hybrid",comp:"$149k–$252k",tier:"strong",
+   why:"Airflow-centric scalable ML systems with mentoring built into the role — the staff-level scope maps onto the Lead title you're already carrying.",
+   gap:"Bottom of the band is under your current level; the range is wide enough that the recruiter screen decides it.",url:"https://www.builtinseattle.com/job/staff-machine-learning-engineer-remote/8816708"},
+
+  {id:"reddit",co:"Reddit",ti:"Senior ML Infrastructure Engineer, Embedding Platform",track:"MLOps",loc:"Remote · US",comp:"$190.8k–$267.1k",tier:"good",
+   why:"Fully remote, senior band, end-to-end ownership from pipeline through production serving, and the best comp of the remote infrastructure postings.",
+   gap:"Wants deep-learning depth — sequence and foundation models, distributed training for recommendations. Your production work is classical and gradient-boosted.",url:"https://job-boards.greenhouse.io/reddit/jobs/8127022"},
+
+  {id:"remitly",co:"Remitly",ti:"Staff Machine Learning Engineer",track:"ML Engineer",loc:"Seattle",comp:"$208k–$260k",tier:"good",
+   why:"The posting names automated retraining, CI/CD and drift detection outright. Seattle-headquartered, staff band, and the strongest content match of the local roles.",
+   gap:"Listed as in-office — verify whether that means hybrid before investing in it.",url:"https://www.builtinseattle.com/job/staff-machine-learning-engineer/9719273",flag:"verify on-site policy"},
+
+  {id:"block",co:"Block / Cash App",ti:"Staff Applied ML Engineer — Intelligent Data, Signals & Systems",track:"ML Engineer",loc:"Remote or Hybrid",comp:"$277k–$415k",tier:"good",
+   why:"Feature pipelines, model serving and experimentation systems — production ML platform work, at the top comp band on this board by a wide margin.",
+   gap:"Staff at Block is a high bar and the role leans modeling-forward. Expect a demanding loop.",url:"https://builtin.com/job/staff-applied-machine-learning-engineer-intelligent-data-signals-systems/11013323"},
+
+  {id:"expedia-mle3",co:"Expedia Group",ti:"Machine Learning Engineer III",track:"ML Engineer",loc:"Seattle · Hybrid",comp:"$146k–$252k",tier:"good",
+   why:"Batch and real-time ML pipelines with MLOps named in the requirements. Seattle hybrid, and a second door into the same org as the Layla role.",
+   gap:"Level III likely sits below Lead — treat as a fallback, not a first application.",url:"https://www.builtinseattle.com/job/machine-learning-engineer-iii/10925004"},
+
+  {id:"lyra",co:"Lyra Health",ti:"Senior ML Engineer (ML/AI)",track:"ML Engineer",loc:"Remote · US",comp:"$143k–$197k",tier:"good",
+   why:"Fully remote, 6+ years of production ML deployment, pipelines for training and inference, plus mentoring and code review — the enablement half of your current job.",
+   gap:"RAG and vector databases are required, not preferred; Kubernetes is on the wish list. Comp band tops out below the others here.",url:"https://careers.lyrahealth.com/job/remote/senior-ml-engineer-ml-ai/43250/96230916704"},
+
+  {id:"atlassian",co:"Atlassian",ti:"Principal Machine Learning Engineer",track:"ML Engineer",loc:"Remote or In-Office",comp:"$196k–$309k",tier:"good",
+   why:"Scalable feature pipelines and production monitoring, remote-eligible. Principal is the level above the one you're pursuing internally — the external route to the same step.",
+   gap:"Principal bar at Atlassian assumes org-wide technical influence; your Code Quality & Lifecycle work is the story to lead with.",url:"https://www.builtinseattle.com/job/principal-machine-learning-engineer/10864329"},
+
+  {id:"dragos",co:"Dragos",ti:"Senior AI/ML Engineer",track:"ML Engineer",loc:"Remote",comp:"$190k",tier:"good",
+   why:"Industrial control-system security — an applied-ML domain with real physical constraints, closer in character to agronomy and aerospace than to consumer ranking.",
+   gap:"Single posted figure rather than a range; less room to negotiate.",url:"https://www.builtinseattle.com/job/senior-ai-ml-engineer/10275192"},
+
+  {id:"deepgram",co:"Deepgram",ti:"Applied ML Engineer",track:"ML Engineer",loc:"Remote",comp:"$150k–$220k",tier:"good",
+   why:"Applied rather than research-track, fully remote, at a speech company where models actually ship.",
+   gap:"Speech and audio modeling is a domain you'd be learning from scratch.",url:"https://www.builtinseattle.com/job/applied-ml-engineer/10109700"},
+
+  {id:"opendoor",co:"Opendoor",ti:"Machine Learning Engineer",track:"ML Engineer",loc:"Seattle · Hybrid",comp:"not posted",tier:"good",
+   why:"Pricing and valuation models on real physical assets — and you own a multiplex, so the problem domain isn't abstract to you.",
+   gap:"No posted range; the market has been unkind to iBuyers, so ask about team stability.",url:"https://www.builtinseattle.com/job/machine-learning-engineer/10267344"},
+
+  {id:"chewy",co:"Chewy",ti:"Machine Learning Engineer III",track:"ML Engineer",loc:"Seattle · Hybrid",comp:"$149k–$225k",tier:"good",
+   why:"Seattle hybrid with a posted range and a straightforward applied-ML remit.",
+   gap:"Level III reads below Lead; the bottom of the band is a real pay cut.",url:"https://www.builtinseattle.com/job/machine-learning-engineer-iii/10540137"},
+
+  {id:"tetrascience",co:"TetraScience",ti:"Lead Software Platform Engineer, MLOps",track:"MLOps",loc:"Remote · CA/MA only",comp:"$200k–$270k",tier:"out",
+   why:"Would have been a top pick: Lead title, scientific-instrument data, $200k+ — a PhD chemist running MLOps is the exact profile.",
+   gap:"Remote eligibility is restricted to California and Massachusetts. Worth one email asking whether Washington is negotiable.",url:"https://www.remoterocketship.com/us/company/tetrascience/jobs/lead-software-platform-engineer-mlops-united-states-remote/"},
+
+  {id:"sequen",co:"Sequen",ti:"Staff MLOps Engineer",track:"MLOps",loc:"Remote · CA/NY only",comp:"$220k–$280k",tier:"out",
+   why:"Staff MLOps at $220k–$280k.",
+   gap:"California and New York residents only.",url:"https://www.remoterocketship.com/us/company/sequen-ai/jobs/staff-mlops-engineer-united-states-remote/"},
+
+  {id:"oura",co:"ŌURA",ti:"Senior MLOps Engineer",track:"MLOps",loc:"Remote · East Coast hours",comp:"$147.9k–$203k",tier:"out",
+   why:"Straightforward senior MLOps role.",
+   gap:"Requires East Coast time-zone overlap — a 5am start from Seattle.",url:"https://www.remoterocketship.com/us/company/ura/jobs/senior-mlops-engineer-us-east-coast-time-zone-united-states-remote/"},
+
+  {id:"veho",co:"Veho",ti:"Senior Machine Learning Operations Engineer",track:"MLOps",loc:"Remote · CA only",comp:"$175k–$200k",tier:"out",
+   why:"Last-mile logistics — adjacent to your Convoy work.",
+   gap:"California residents only.",url:"https://www.remoterocketship.com/us/company/veho-2/jobs/senior-machine-learning-operations-engineer-california-remote/"},
+
+  {id:"zeitview",co:"Zeitview",ti:"Senior MLOps Engineer",track:"MLOps",loc:"Remote · MA/CA only",comp:"$170k–$180k",tier:"out",
+   why:"Aerial imagery for energy infrastructure — computer vision on physical assets.",
+   gap:"Massachusetts and California only.",url:"https://www.remoterocketship.com/us/company/zeitview/jobs/senior-mlops-engineer-massachusetts-remote/"}
+];
+
+var STATE = JSON.parse(document.getElementById("app-state").textContent);
+if(!STATE.status) STATE.status = {};
+if(!STATE.notes) STATE.notes = {};
+var DIRTY = false;
+var FILTERS = {tier:"all",track:"all",loc:"all",status:"open"};
+
+function esc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function statusOf(id){return STATE.status[id] || "new";}
+function locBucket(j){
+  if(j.loc.indexOf("Remote") === 0) return "remote";
+  if(j.loc.indexOf("Seattle") === 0) return "seattle";
+  return "other";
+}
+function passes(j){
+  if(FILTERS.tier !== "all" && j.tier !== FILTERS.tier) return false;
+  if(FILTERS.track !== "all" && j.track !== FILTERS.track) return false;
+  if(FILTERS.loc !== "all" && locBucket(j) !== FILTERS.loc) return false;
+  var st = statusOf(j.id);
+  if(FILTERS.status === "open" && DONE[st]) return false;
+  if(FILTERS.status === "active" && (st === "new" || DONE[st])) return false;
+  if(FILTERS.status === "done" && !DONE[st]) return false;
+  return true;
+}
+
+function renderRow(j){
+  var st = statusOf(j.id);
+  var opts = "";
+  for(var i=0;i<STATUSES.length;i++){
+    opts += '<option value="' + STATUSES[i][0] + '"' + (STATUSES[i][0] === st ? " selected" : "") + ">" + esc(STATUSES[i][1]) + "</option>";
+  }
+  var chips = '<span class="chip track">' + esc(j.track) + '</span><span class="chip">' + esc(j.loc) + '</span><span class="chip comp">' + esc(j.comp) + "</span>";
+  if(j.flag) chips += '<span class="chip flag">' + esc(j.flag) + "</span>";
+  var link = j.url ? '<a class="applylink" href="' + esc(j.url) + '" target="_blank" rel="noopener">Open posting</a>' : "";
+  return '<article class="row t-' + j.tier + (DONE[st] ? " is-done" : "") + '">' +
+    '<div class="rowmain">' +
+      '<div class="rowhead"><span class="co">' + esc(j.co) + '</span><span class="ti">' + esc(j.ti) + "</span></div>" +
+      '<div class="meta">' + chips + "</div>" +
+      '<p class="why"><b>Why</b>' + esc(j.why) + "</p>" +
+      '<p class="gap"><b>Watch</b>' + esc(j.gap) + "</p>" +
+    "</div>" +
+    '<div class="rowside">' +
+      '<select class="status-' + st + '" data-status="' + j.id + '" aria-label="Status for ' + esc(j.co) + '">' + opts + "</select>" +
+      link +
+      '<textarea class="notes" data-note="' + j.id + '" placeholder="Notes, contacts, dates" aria-label="Notes for ' + esc(j.co) + '">' + esc(STATE.notes[j.id] || "") + "</textarea>" +
+    "</div>" +
+  "</article>";
+}
+
+function renderApp(){
+  var i, j;
+  var counts = {total:0, active:0, applied:0, out:0};
+  for(i=0;i<JOBS.length;i++){
+    j = JOBS[i];
+    if(j.tier === "out"){ counts.out++; continue; }
+    counts.total++;
+    var st = statusOf(j.id);
+    if(!DONE[st] && st !== "new") counts.active++;
+    if(st === "applied" || st === "screening" || st === "interview" || st === "offer") counts.applied++;
+  }
+
+  var tracks = {}, tOpts = '<option value="all">All tracks</option>';
+  for(i=0;i<JOBS.length;i++){ tracks[JOBS[i].track] = 1; }
+  for(var k in tracks){ if(tracks.hasOwnProperty(k)) tOpts += '<option value="' + esc(k) + '"' + (FILTERS.track === k ? " selected" : "") + ">" + esc(k) + "</option>"; }
+
+  function sel(name, pairs, cur){
+    var s = "";
+    for(var a=0;a<pairs.length;a++){ s += '<option value="' + pairs[a][0] + '"' + (cur === pairs[a][0] ? " selected" : "") + ">" + esc(pairs[a][1]) + "</option>"; }
+    return '<select data-filter="' + name + '">' + s + "</select>";
+  }
+
+  var html = "";
+  html += '<header class="masthead">' +
+    "<div><h1>Role Pipeline</h1>" +
+    '<p class="sub">Data Science, MLOps and ML Engineering roles screened against your resume — remote-US or Seattle hybrid, ranked by how much of the posting you already do. Excluded: Amazon, Meta, crypto, gambling, law enforcement and defense, and roles built around an on-call rotation.</p>' +
+    '<p class="stamp">Screened 6 September 2026 · ' + counts.total + " tracked · " + counts.out + " screened out</p></div>" +
+    '<div class="counters">' +
+      '<div class="counter"><b>' + counts.total + "</b><span>Tracked</span></div>" +
+      '<div class="counter"><b>' + counts.active + "</b><span>In play</span></div>" +
+      '<div class="counter"><b>' + counts.applied + "</b><span>Applied+</span></div>" +
+    "</div></header>";
+
+  html += '<div class="toolbar">' +
+    '<div class="field"><label>Tier</label>' + sel("tier", [["all","All tiers"],["strong","Strong fit"],["good","Good fit"],["out","Screened out"]], FILTERS.tier) + "</div>" +
+    '<div class="field"><label>Track</label><select data-filter="track">' + tOpts + "</select></div>" +
+    '<div class="field"><label>Location</label>' + sel("loc", [["all","Anywhere"],["remote","Remote"],["seattle","Seattle"],["other","Other"]], FILTERS.loc) + "</div>" +
+    '<div class="field"><label>Status</label>' + sel("status", [["open","Open (hide closed)"],["all","Everything"],["active","In play only"],["done","Closed only"]], FILTERS.status) + "</div>" +
+    '<div class="spacer"></div>' +
+    '<div class="savebar"><button class="btn" data-act="save"' + (DIRTY ? "" : " disabled") + ">Save changes</button>" +
+    '<span class="savenote' + (DIRTY ? " dirty" : "") + '">' + (DIRTY ? "Unsaved edits" : (STATE.saved ? "Saved " + esc(STATE.saved) : "No edits yet")) + "</span></div>" +
+  "</div>";
+
+  for(var t=0;t<TIERS.length;t++){
+    var tier = TIERS[t];
+    var rows = "";
+    var n = 0;
+    for(i=0;i<JOBS.length;i++){
+      j = JOBS[i];
+      if(j.tier !== tier[0]) continue;
+      if(!passes(j)) continue;
+      rows += renderRow(j);
+      n++;
+    }
+    if(FILTERS.tier !== "all" && FILTERS.tier !== tier[0]) continue;
+    html += '<section class="tier"><div class="tier-head"><h2>' + esc(tier[1]) + "</h2><p>" + esc(tier[2]) + '</p><span class="tier-count">' + n + "</span></div>" +
+      '<div class="rows">' + (n ? rows : '<p class="empty">Nothing here under the current filters.</p>') + "</div></section>";
+  }
+
+  html += '<footer class="foot">' +
+    "<p>Comp figures are the ranges the employers posted, not offers. Ranges are the single most useful filter here and roughly half of Seattle postings publish one — treat an unposted range as a question for the recruiter screen, not as a gap.</p>" +
+    "<p>Tiers weigh three things: how much of the posting describes work you have already shipped, whether the level matches Lead, and whether the location clears remote-US or Seattle-hybrid. Roles where the technical content was a genuine reach — GPU serving, distributed training, cluster infrastructure — were dropped rather than ranked, so everything listed is a role worth your time this week. Screened-out entries failed a location filter and are kept so they don't resurface in the next search.</p>" +
+    "<p>The one pattern worth acting on: every role that fell out did so on the same axis — Kubernetes, GPU clusters, distributed training. That gap is what separates this list from the $250k+ band.</p>" +
+    "<p>Status and notes save into this page itself, so the link stays current wherever you open it.</p>" +
+  "</footer>";
+
+  return html;
+}
+
+function paint(){
+  document.getElementById("app").innerHTML = renderApp();
+}
+
+function markDirty(){
+  if(!DIRTY){
+    DIRTY = true;
+    var b = document.querySelector('[data-act="save"]');
+    var n = document.querySelector(".savenote");
+    if(b) b.disabled = false;
+    if(n){ n.textContent = "Unsaved edits"; n.classList.add("dirty"); }
+  }
+}
+
+function buildDoc(){
+  var style = document.getElementById("app-style").textContent;
+  var code = document.getElementById("app-code").textContent;
+  var json = JSON.stringify(STATE).replace(/</g, "\\u003c");
+  return "<!doctype html>\n<html lang=\"en\">\n<head>\n" +
+    "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
+    "<title>" + DOC_TITLE + "</title>\n" +
+    "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n" +
+    "<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n" +
+    "<link id=\"app-fonts\" rel=\"stylesheet\" href=\"" + FONT_HREF + "\">\n" +
+    "<style id=\"app-style\">" + style + "</style>\n</head>\n<body>\n" +
+    "<div id=\"app\">" + renderApp() + "</div>\n" +
+    "<script id=\"app-state\" type=\"application/json\">" + json + "<\/script>\n" +
+    "<script id=\"app-code\">" + code + "<\/script>\n</body>\n</html>";
+}
+
+var ARTIFACT = null;
+claude.use("artifact").then(function(a){ ARTIFACT = a; }).catch(function(){ ARTIFACT = null; });
+
+function save(){
+  var note = document.querySelector(".savenote");
+  if(!ARTIFACT){
+    if(note){ note.textContent = "Saving unavailable in this view"; }
+    return;
+  }
+  if(note){ note.textContent = "Saving..."; }
+  STATE.saved = new Date().toLocaleDateString("en-US", {month:"short", day:"numeric", year:"numeric"});
+  ARTIFACT.publish(buildDoc()).then(function(){
+    DIRTY = false;
+  }).catch(function(err){
+    var code = err && err.code;
+    if(code === "conflict") return;
+    if(note){
+      note.textContent = (code === "not_writer" || code === "not_granted") ? "This view is read-only" : "Save failed — try again";
+    }
+  });
+}
+
+document.addEventListener("change", function(e){
+  var el = e.target;
+  if(el.dataset && el.dataset.filter){
+    FILTERS[el.dataset.filter] = el.value;
+    paint();
+    return;
+  }
+  if(el.dataset && el.dataset.status){
+    STATE.status[el.dataset.status] = el.value;
+    markDirty();
+    paint();
+    return;
+  }
+  if(el.dataset && el.dataset.note){
+    STATE.notes[el.dataset.note] = el.value;
+    markDirty();
+  }
+});
+
+document.addEventListener("input", function(e){
+  if(e.target.dataset && e.target.dataset.note){
+    STATE.notes[e.target.dataset.note] = e.target.value;
+    markDirty();
+  }
+});
+
+document.addEventListener("click", function(e){
+  var b = e.target.closest ? e.target.closest('[data-act="save"]') : null;
+  if(b) save();
+});
+
+paint();
+</script>
