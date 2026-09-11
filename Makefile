@@ -1,4 +1,4 @@
-.PHONY: init dev test check-clean check-staged lint typecheck docs
+.PHONY: init dev test check-clean check-staged lint typecheck docs docs-serve
 
 DATA_PATTERN := ^(data/|config/criteria\.yaml$$)
 
@@ -44,3 +44,6 @@ typecheck:
 
 docs:
 	sphinx-build -b html docs docs/_build/html
+
+docs-serve:
+	sphinx-autobuild docs docs/_build/html --host 127.0.0.1

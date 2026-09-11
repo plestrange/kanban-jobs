@@ -25,6 +25,7 @@ discovery sweep.
 - `make lint` — ruff
 - `make typecheck` — mypy
 - `make docs` — build the Sphinx docs into `docs/_build/html`
+- `make docs-serve` — serve the docs at http://127.0.0.1:8000, rebuilding on save
 
 ## Status
 
