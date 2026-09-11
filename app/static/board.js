@@ -212,4 +212,11 @@
         setTimeout(function () { card.classList.remove("drop-error"); }, 1600);
       });
   }
+
+  document.addEventListener("click", function (e) {
+    if (e.target.closest && (e.target.closest(".card-link") || e.target.closest(".archive-prompt"))) return;
+    var card = e.target.closest ? e.target.closest(".card[data-id]") : null;
+    if (!card) return;
+    window.location.href = "/cards/" + encodeURIComponent(card.dataset.id);
+  });
 })();

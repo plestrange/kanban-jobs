@@ -25,7 +25,7 @@ discovery sweep.
 
 ## Status
 
-M1–M3 are in place: the core library (`core/config.py`, `models.py`,
-`store.py`, `pipeline.py`, `views.py`), the Discovery review queue, and a
-read-only, server-rendered board. M4 (drag-and-drop) is next — see
-`ARCHITECTURE.md` §11 for the build order.
+M1–M5 are in place: the core library, the Discovery review queue, the
+drag-and-drop board with mtime conflict handling, and card detail (notes,
+contacts, referral, an editable history timeline). Per `ARCHITECTURE.md`
+§11, M5 is the last milestone — the tool is finished, not paused.

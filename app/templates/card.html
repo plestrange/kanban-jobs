@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block title %}{{ card.company }} — Job Pipeline{% endblock %}
+
+{% block content %}
+<div class="detail" data-id="{{ card.id }}" data-mtime="{{ mtime }}">
+  <a class="back-link" href="{{ url_for('board') }}">← Board</a>
+
+  <header class="detail-head">
+    <div>
+      <h1>{{ card.company }}</h1>
+      <p class="detail-title">{{ card.title }}{% if card.team %} · {{ card.team }}{% endif %}</p>
+    </div>
+    <div class="detail-badges">
+      <span class="tier-badge tier-{{ card.assessment.tier }}">{{ card.assessment.tier }}</span>
+      <span class="chip">{{ card.stage.replace('-', ' ') }}</span>
+      {% if card.stage == 'archived' %}<span class="chip">reason: {{ card.reason }}</span>{% endif %}
+      <span class="days">{{ card | days_in_stage(today) }} days</span>
+    </div>
+  </header>
+
+  <div class="detail-meta">
+    <span class="chip comp">{{ card.comp | comp_text }}</span>
+    <span class="chip">{{ card.location.mode }} · {{ card.location.scope }}</span>
+    {% if card.url %}<a class="card-link" href="{{ card.url }}" target="_blank" rel="noopener">Posting ↗</a>{% endif %}
+  </div>
+
+  {% if card.company_summary %}<p class="co-summary">{{ card.company_summary }}</p>{% endif %}
+
+  <section class="detail-section">
+    <h2>Why / gap</h2>
+    <p class="why"><b>Why</b>{{ card.assessment.why }}</p>
+    <p class="gap"><b>Gap</b>{{ card.assessment.gap }}</p>
+  </section>
+
+  <section class="detail-section">
+    <h2>Notes</h2>
+    <textarea id="notes" rows="6" placeholder="Free text — prep, questions, comp notes...">{{ card.notes }}</textarea>
+    <span class="save-state" id="notes-state"></span>
+  </section>
+
+  <section class="detail-section">
+    <h2>Referral</h2>
+    <div class="referral-form">
+      <label class="field">
+        <span>Status</span>
+        <select id="ref-status">
+          {% for s in referral_statuses %}
+          <option value="{{ s }}" {% if card.referral.status == s %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label class="field">
+        <span>Via</span>
+        <input type="text" id="ref-via" value="{{ card.referral.via }}" placeholder="Who, and how">
+      </label>
+      <label class="field">
+        <span>Checked</span>
+        <input type="date" id="ref-checked" value="{{ card.referral.checked.isoformat() if card.referral.checked else '' }}">
+      </label>
+    </div>
+    <span class="save-state" id="referral-state"></span>
+  </section>
+
+  <section class="detail-section">
+    <h2>Contacts</h2>
+    <div id="contacts-list">
+      {% for c in card.contacts %}
+      <div class="contact-row">
+        <input type="text" class="c-name" placeholder="Name" value="{{ c.name }}">
+        <input type="text" class="c-role" placeholder="Role" value="{{ c.role }}">
+        <input type="text" class="c-note" placeholder="Note" value="{{ c.note }}">
+        <button type="button" class="btn ghost remove-contact">Remove</button>
+      </div>
+      {% endfor %}
+    </div>
+    <button type="button" id="add-contact" class="btn ghost">+ Add contact</button>
+    <span class="save-state" id="contacts-state"></span>
+  </section>
+
+  <section class="detail-section">
+    <h2>History</h2>
+    <ol class="timeline" id="timeline">
+      {% for h in card.history %}
+      <li class="timeline-row" data-index="{{ loop.index0 }}">
+        <span class="timeline-to">{{ h.to.replace('-', ' ') }}</span>
+        <input type="date" class="h-occurred" value="{{ h.occurred.isoformat() }}" max="{{ h.recorded.isoformat() }}">
+        <input type="text" class="h-note" placeholder="Note (optional)" value="{{ h.note }}">
+        <span class="timeline-recorded">recorded {{ h.recorded.isoformat() }}</span>
+        <span class="save-state"></span>
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='card.js') }}"></script>
+{% endblock %}

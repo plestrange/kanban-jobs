@@ -157,3 +157,110 @@ def test_board_renders_draggable_cards_with_mtime(client):
     body = res.get_data(as_text=True)
     assert 'draggable="true"' in body
     assert 'data-stage="applied"' in body
+
+
+def test_card_detail_renders(client):
+    res = client.get("/cards/acme-sr-mlops")
+    assert res.status_code == 200
+    body = res.get_data(as_text=True)
+    assert "Acme Robotics" in body
+    assert "Jordan Rivas" in body
+    assert "review staged-rollout design" in body
+
+
+def test_card_detail_unknown_404s(client):
+    res = client.get("/cards/does-not-exist")
+    assert res.status_code == 404
+
+
+def test_update_card_notes(client):
+    mtime = _mtime(client, "acme-sr-mlops")
+    res = client.patch(
+        "/api/cards/acme-sr-mlops", json={"notes": "new prep notes", "mtime": mtime}
+    )
+    assert res.status_code == 200
+    assert res.get_json()["notes"] == "new prep notes"
+
+
+def test_update_card_referral(client):
+    mtime = _mtime(client, "acme-sr-mlops")
+    res = client.patch(
+        "/api/cards/acme-sr-mlops",
+        json={
+            "referral": {"status": "possible", "via": "a friend", "checked": "2026-09-10"},
+            "mtime": mtime,
+        },
+    )
+    assert res.status_code == 200
+    data = res.get_json()
+    assert data["referral"] == {"status": "possible", "via": "a friend", "checked": "2026-09-10"}
+
+
+def test_update_card_referral_invalid_status_400s(client):
+    mtime = _mtime(client, "acme-sr-mlops")
+    res = client.patch(
+        "/api/cards/acme-sr-mlops",
+        json={"referral": {"status": "nope"}, "mtime": mtime},
+    )
+    assert res.status_code == 400
+
+
+def test_update_card_contacts_replaces_list_and_drops_blank_names(client):
+    mtime = _mtime(client, "acme-sr-mlops")
+    res = client.patch(
+        "/api/cards/acme-sr-mlops",
+        json={
+            "contacts": [
+                {"name": "Dana Lee", "role": "hiring manager", "note": ""},
+                {"name": "", "role": "should be dropped"},
+            ],
+            "mtime": mtime,
+        },
+    )
+    assert res.status_code == 200
+    assert res.get_json()["contacts"] == [{"name": "Dana Lee", "role": "hiring manager", "note": ""}]
+
+
+def test_update_card_conflict_on_stale_mtime(client):
+    res = client.patch("/api/cards/acme-sr-mlops", json={"notes": "x", "mtime": 1.0})
+    assert res.status_code == 409
+    assert res.get_json()["error"] == "conflict"
+
+
+def test_amend_history_entry_updates_occurred_and_note(client):
+    mtime = _mtime(client, "acme-sr-mlops")
+    res = client.patch(
+        "/api/cards/acme-sr-mlops/history/1",
+        json={"occurred": "2026-08-13", "note": "applied a day earlier than logged", "mtime": mtime},
+    )
+    assert res.status_code == 200
+    entry = res.get_json()["history"][1]
+    assert entry["occurred"] == "2026-08-13"
+    assert entry["note"] == "applied a day earlier than logged"
+    assert entry["recorded"] == "2026-08-14"  # unchanged
+
+
+def test_amend_history_future_occurred_400s(client):
+    mtime = _mtime(client, "acme-sr-mlops")
+    res = client.patch(
+        "/api/cards/acme-sr-mlops/history/1",
+        json={"occurred": "2099-01-01", "mtime": mtime},
+    )
+    assert res.status_code == 400
+
+
+def test_amend_history_bad_index_404s(client):
+    mtime = _mtime(client, "acme-sr-mlops")
+    res = client.patch(
+        "/api/cards/acme-sr-mlops/history/99",
+        json={"occurred": "2026-08-13", "mtime": mtime},
+    )
+    assert res.status_code == 404
+
+
+def test_amend_history_conflict_on_stale_mtime(client):
+    res = client.patch(
+        "/api/cards/acme-sr-mlops/history/1",
+        json={"occurred": "2026-08-13", "mtime": 1.0},
+    )
+    assert res.status_code == 409
