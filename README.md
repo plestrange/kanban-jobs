@@ -34,6 +34,12 @@ drag-and-drop board with mtime conflict handling, and card detail (notes,
 contacts, referral, an editable history timeline). Per `docs/ARCHITECTURE.md`
 §11, M5 is the last milestone — the tool is finished, not paused.
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md). CI runs lint, typecheck, tests, and
+the docs build on every PR.
+
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT — see [LICENSE](LICENSE). Changes are tracked in
+[CHANGELOG.md](CHANGELOG.md).
