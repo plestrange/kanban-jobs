@@ -38,6 +38,12 @@ def test_board_shows_days_in_stage(client):
     assert "days</span>" in body
 
 
+def test_board_links_to_posting(client):
+    res = client.get("/board")
+    body = res.get_data(as_text=True)
+    assert 'href="https://job-boards.greenhouse.io/acme/jobs/9001234567"' in body
+
+
 def test_discovery_page_lists_inbox_cards(client):
     res = client.get("/discovery")
     assert res.status_code == 200
