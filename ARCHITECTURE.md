@@ -275,6 +275,7 @@ assessment:
   gap: >
     Kafka/Kinesis streaming and Redis/DynamoDB stores are named requirements
     and aren't on the resume.
+company_summary: "Fintech banking platform for startups."  # one line, at a glance
 
 # ═══ pipeline zone — written by the app, yours alone ═══
 stage: technical                  # stored, not derived — see below

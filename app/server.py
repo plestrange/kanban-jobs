@@ -25,6 +25,7 @@ def _card_json(card: Card) -> dict:
     return {
         "id": card.id,
         "company": card.company,
+        "company_summary": card.company_summary,
         "title": card.title,
         "team": card.team,
         "tier": card.assessment.tier,

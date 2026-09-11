@@ -22,6 +22,13 @@ def test_load_cards_and_inbox(root):
     assert {c.id for c in inbox} == {"umbrella-mlops", "hooli-ml-eng"}
 
 
+def test_company_summary_defaults_to_empty_string(root):
+    acme = next(c for c in store.load_cards(root=root) if c.id == "acme-sr-mlops")
+    globex = next(c for c in store.load_cards(root=root) if c.id == "globex-mle")
+    assert acme.company_summary == "Industrial robotics company."
+    assert globex.company_summary == ""  # fixture predates the field
+
+
 def test_load_finds_card_in_either_dir(root):
     assert store.load("acme-sr-mlops", root=root).company == "Acme Robotics"
     assert store.load("umbrella-mlops", root=root).company == "Umbrella Analytics"

@@ -199,6 +199,9 @@ Confirm and extract:
   wrong often — "in-office" on a board frequently means hybrid in the posting.
   Where they disagree, trust the ATS and note the discrepancy.
 - **Required experience and named stack.**
+- **`company_summary`.** One line, plain language, what the company actually
+  does — the thing a person would want at a glance before reading further.
+  "Fintech banking platform for startups", not a mission-statement paraphrase.
 
 Then write the assessment against `profile.md`:
 

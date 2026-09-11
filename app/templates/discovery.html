@@ -25,6 +25,7 @@
         <span class="co">{{ card.company }}</span>
         <span class="ti">{{ card.title }}</span>
       </div>
+      {% if card.company_summary %}<p class="co-summary">{{ card.company_summary }}</p>{% endif %}
       <div class="meta">
         <span class="chip comp">{{ card.comp | comp_text }}</span>
         <span class="chip">{{ card.location.mode }} · {{ card.location.scope }}</span>

@@ -14,6 +14,7 @@ assessment:
     Real-time inference service, model registry and staged rollouts.
   gap: >
     Kafka streaming is a named requirement and isn't on the resume.
+company_summary: "Industrial robotics company."
 
 stage: technical
 reason: null

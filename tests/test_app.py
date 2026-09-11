@@ -29,13 +29,16 @@ def test_discovery_page_lists_inbox_cards(client):
     body = res.get_data(as_text=True)
     assert "Umbrella Analytics" in body
     assert "Hooli" in body
+    assert "Data-broker risk analytics platform." in body
 
 
 def test_api_inbox_sorted_by_tier_then_comp(client):
     res = client.get("/api/inbox")
     assert res.status_code == 200
-    ids = [c["id"] for c in res.get_json()]
-    assert ids == ["umbrella-mlops", "hooli-ml-eng"]
+    cards = res.get_json()
+    assert [c["id"] for c in cards] == ["umbrella-mlops", "hooli-ml-eng"]
+    assert cards[0]["company_summary"] == "Data-broker risk analytics platform."
+    assert cards[1]["company_summary"] == ""  # fixture predates the field
 
 
 def test_review_interested_removes_from_inbox(client, tmp_path):

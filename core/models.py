@@ -90,6 +90,7 @@ class Card:
     url_kind: str
     discovered: Discovered
     assessment: Assessment
+    company_summary: str = ""  # one line: what the company does, at a glance
 
     # pipeline zone — written by the app, yours alone
     stage: str | None = None  # None while the card still lives in inbox/
@@ -161,6 +162,7 @@ class Card:
                 rubric=disc.get("rubric", ""),
             ),
             assessment=Assessment(tier=tier, why=assess.get("why", ""), gap=assess.get("gap", "")),
+            company_summary=data.get("company_summary", ""),
             stage=stage,
             reason=reason,
             history=history,
@@ -203,6 +205,7 @@ class Card:
                 "why": self.assessment.why,
                 "gap": self.assessment.gap,
             },
+            "company_summary": self.company_summary,
             "stage": self.stage,
             "reason": self.reason,
             "history": [
