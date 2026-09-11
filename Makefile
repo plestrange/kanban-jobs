@@ -1,6 +1,13 @@
-.PHONY: init dev test check-clean check-staged lint typecheck docs docs-serve
+.PHONY: venv init dev test check-clean check-staged lint typecheck docs docs-serve
 
 DATA_PATTERN := ^(data/|config/criteria\.yaml$$)
+
+venv:
+	rm -rf .venv
+	python3 -m venv .venv
+	.venv/bin/pip install --upgrade pip
+	.venv/bin/pip install -r requirements-dev.txt
+	@echo "venv ready on $$(.venv/bin/python3 --version) — activate with: source .venv/bin/activate"
 
 init:
 	mkdir -p data/inbox data/cards

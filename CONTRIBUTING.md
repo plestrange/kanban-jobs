@@ -13,9 +13,8 @@ Requires Python 3.11+ (this repo pins 3.12 via `.python-version` if you use
 ```
 git clone <your fork>
 cd job-pipeline
-python3 -m venv .venv
+make venv   # creates .venv and installs everything from requirements-dev.txt
 source .venv/bin/activate
-pip install pyyaml flask jinja2 pytest ruff mypy types-PyYAML sphinx myst-parser furo sphinx-autobuild
 make init   # sets up data/ and installs the pre-commit hook
 ```
 

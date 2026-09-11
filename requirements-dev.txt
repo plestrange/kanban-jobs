@@ -1,0 +1,17 @@
+# Mirrors pyproject.toml's [project.dependencies] and
+# [project.optional-dependencies].dev. There's no [build-system] table
+# (docs/ARCHITECTURE.md §6.4 — this isn't meant to be pip-installed), so this
+# file, not `pip install -e .`, is what `make venv`, CI, and CONTRIBUTING.md
+# all install from.
+pyyaml>=6.0
+flask>=3.0
+jinja2>=3.1
+
+pytest>=8.0
+ruff>=0.16
+mypy>=1.19
+types-PyYAML
+sphinx>=7.4
+myst-parser>=3.0
+furo>=2025.12
+sphinx-autobuild>=2024.10

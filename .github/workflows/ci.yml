@@ -22,9 +22,10 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
+          cache-dependency-path: requirements-dev.txt
 
       - name: Install dependencies
-        run: pip install pyyaml flask jinja2 pytest ruff mypy types-PyYAML sphinx myst-parser furo
+        run: pip install -r requirements-dev.txt
 
       - name: Lint
         run: make lint
