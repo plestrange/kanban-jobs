@@ -1,14 +1,4 @@
 #!/usr/bin/env bash
-# Rejects any commit that stages a path under data/ or config/criteria.yaml.
-# Installed into .git/hooks/ by `make init` — see ARCHITECTURE.md §9.
+# Delegates to `make check-staged` — see docs/ARCHITECTURE.md §9.
 set -euo pipefail
-
-staged=$(git diff --cached --name-only)
-bad=$(printf '%s\n' "$staged" | grep -E '^(data/|config/criteria\.yaml$)' || true)
-
-if [ -n "$bad" ]; then
-  echo "Refusing commit — staged path(s) under data/ or config/criteria.yaml:" >&2
-  echo "$bad" >&2
-  echo "This data must never enter git history. See ARCHITECTURE.md §9." >&2
-  exit 1
-fi
+exec make check-staged

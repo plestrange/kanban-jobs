@@ -488,38 +488,38 @@ where most kanban drag bugs live (§6.2).
 
 ### 6.1 Core library
 
-`core/` owns loading, validation, mutation and derivation. Both views are thin
+`src/` owns loading, validation, mutation and derivation. Both views are thin
 adapters over it. This is what makes a third interface — a CLI, a static
 renderer — cost a fraction of the first.
 
 ```python
-# core/config.py
+# src/config.py
 DATA_DIR: Path                              # <repo root>/data — a constant
 def load_criteria(root: Path = DATA_DIR) -> Criteria
 
-# core/models.py
+# src/models.py
 @dataclass class Card: ...                  # both zones, parsed and validated
 @dataclass class Discovery: ...
 @dataclass class Pipeline: ...
 
-# core/store.py — the only module that touches the filesystem
+# src/store.py — the only module that touches the filesystem
 def load_inbox(root: Path = DATA_DIR) -> list[Card]
 def load_cards(root: Path = DATA_DIR) -> list[Card]
 def load(card_id: str, root: Path = DATA_DIR) -> Card
 def save(card, expected_mtime, root=DATA_DIR) -> float   # atomic; raises on conflict
 def review(card_id, interested, root=DATA_DIR) -> Card   # inbox/ -> cards/; seeds history
 
-# core/pipeline.py — the only place stage changes
+# src/pipeline.py — the only place stage changes
 def move(card, to_stage, reason=None, note="", occurred=today) -> Card
 def amend(card, index: int, occurred: date = None, note: str = None) -> Card
 
-# core/views.py — everything derived
+# src/views.py — everything derived
 def days_in_stage(card: Card, today: date) -> int       # history[-1].occurred
 def board(cards: list[Card]) -> dict[Stage, list[Card]] # columns, oldest first
 def queue(cards: list[Card]) -> list[Card]              # inbox, sorted for review
 ```
 
-`views.py` is four functions because §5.5 deleted the rest. Nothing in `core/`
+`views.py` is four functions because §5.5 deleted the rest. Nothing in `src/`
 takes `today` except `days_in_stage`, and nothing reads `criteria.yaml` at all —
 criteria govern discovery, not the board.
 
@@ -559,7 +559,7 @@ you were forced to type is worth less than the one you chose to. The `reason`
 dropdown defaults to `passed` from the review queue and is unset elsewhere, so
 archiving is never more than one keystroke when you have nothing to add.
 
-`core/` knows nothing about HTTP, HTML, or the browser. **Every function that
+`src/` knows nothing about HTTP, HTML, or the browser. **Every function that
 touches disk takes `root`, defaulting to `DATA_DIR`** — that parameter is the
 whole of the test seam, and the reason §2 needs no environment variable. Tests
 pass a fixture directory; the app never passes anything.
@@ -662,14 +662,19 @@ The running app is the only interface. `make dev`, `127.0.0.1`, done.
 ```
 job-pipeline/
   README.md
-  ARCHITECTURE.md
-  DISCOVERY.md                  # the procedure a search session follows
   .gitignore
   pyproject.toml
   Makefile
+  docs/
+    conf.py                     # Sphinx config; myst-parser renders these .md files directly
+    index.md
+    ARCHITECTURE.md
+    DISCOVERY.md                 # the procedure a search session follows
+  hooks/
+    pre-commit                  # installed by `make init`; delegates to `make check-staged`
   config/
     criteria.example.yaml       # schema + placeholders, no personal values
-  core/
+  src/
     __init__.py
     config.py                   # data-dir resolution
     models.py                   # dataclasses + schema validation
@@ -677,30 +682,34 @@ job-pipeline/
     pipeline.py                 # stage transitions
     views.py                    # derived state
   app/
-    server.py                   # Flask, ~180 lines
-    static/board.js             # drag-drop, ~150 lines
-    static/discovery.js         # review keybindings, ~60 lines
+    server.py                   # Flask
+    static/board.js             # drag-drop
+    static/discovery.js         # review keybindings
+    static/card.js               # card-detail autosave
     static/app.css
     templates/
       base.html                 # shared nav
       board.html
       discovery.html
+      card.html
   tests/
     fixtures/                   # invented cards, fictional companies
     test_pipeline.py
     test_views.py
     test_store.py
     test_boundary.py            # asserts discovery can't write cards/
+    test_app.py
 ```
 
 No `data/`. It isn't in the repo; `make init` creates it elsewhere.
 
 The `Makefile` is the entry point for everything: `make init` (§6.4), `make dev`,
-`make test`, and `make check-clean` (§9). No `cli.py`, no `[project.scripts]` —
-see §6.4.
+`make test`, `make check-clean` / `make check-staged` (§9), `make lint`, `make
+typecheck`, and `make docs`. No `cli.py`, no `[project.scripts]` — see §6.4.
 
-**Stack:** Python 3.11+, `pyyaml`, `jinja2`, `flask`, `pytest`. No frontend build
-step — plain JS and CSS served as static files. `make dev` starts it.
+**Stack:** Python 3.11+, `pyyaml`, `jinja2`, `flask`, `pytest`, `ruff`, `mypy`,
+`sphinx` + `myst-parser` + `furo`. No frontend build step — plain JS and CSS
+served as static files. `make dev` starts it.
 
 ---
 

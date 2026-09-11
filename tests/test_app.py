@@ -218,7 +218,9 @@ def test_update_card_contacts_replaces_list_and_drops_blank_names(client):
         },
     )
     assert res.status_code == 200
-    assert res.get_json()["contacts"] == [{"name": "Dana Lee", "role": "hiring manager", "note": ""}]
+    assert res.get_json()["contacts"] == [
+        {"name": "Dana Lee", "role": "hiring manager", "note": ""}
+    ]
 
 
 def test_update_card_conflict_on_stale_mtime(client):
@@ -231,7 +233,11 @@ def test_amend_history_entry_updates_occurred_and_note(client):
     mtime = _mtime(client, "acme-sr-mlops")
     res = client.patch(
         "/api/cards/acme-sr-mlops/history/1",
-        json={"occurred": "2026-08-13", "note": "applied a day earlier than logged", "mtime": mtime},
+        json={
+            "occurred": "2026-08-13",
+            "note": "applied a day earlier than logged",
+            "mtime": mtime,
+        },
     )
     assert res.status_code == 200
     entry = res.get_json()["history"][1]

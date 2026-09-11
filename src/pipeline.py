@@ -14,7 +14,7 @@ def move(
 ) -> Card:
     """The only place stage changes. Appends to history and rewrites `stage`.
 
-    Any stage moves to any stage — there is no transition table (ARCHITECTURE.md §6.1).
+    Any stage moves to any stage — there is no transition table (docs/ARCHITECTURE.md §6.1).
     """
     recorded = date.today()
     occurred = occurred or recorded
@@ -28,7 +28,7 @@ def move(
 
 
 def amend(card: Card, index: int, occurred: date | None = None, note: str | None = None) -> Card:
-    """Correct a past history entry. `recorded` is never editable (ARCHITECTURE.md §5.2)."""
+    """Correct a past history entry. `recorded` is never editable (docs/ARCHITECTURE.md §5.2)."""
     entry = card.history[index]
     if occurred is not None:
         if occurred > entry.recorded:

@@ -19,7 +19,7 @@ class ConflictError(Exception):
     """Raised when a save's expected_mtime no longer matches the file on disk."""
 
 
-def _str_presenter(dumper: yaml.Dumper, data: str):
+def _str_presenter(dumper: yaml.SafeDumper, data: str):
     style = "|" if "\n" in data else None
     return dumper.represent_scalar("tag:yaml.org,2002:str", data, style=style)
 

@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-import core.store as store
+import src.store as store
 
 FIXTURES = Path("tests/fixtures")
 

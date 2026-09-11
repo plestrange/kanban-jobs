@@ -1,9 +1,9 @@
 from datetime import date
 from pathlib import Path
 
-from core.models import Assessment, Card, Comp, Discovered, HistoryEntry, Location
-from core.store import load_cards, load_inbox
-from core.views import board, days_in_stage, queue
+from src.models import Assessment, Card, Comp, Discovered, HistoryEntry, Location
+from src.store import load_cards, load_inbox
+from src.views import board, days_in_stage, queue
 
 FIXTURES = Path("tests/fixtures")
 

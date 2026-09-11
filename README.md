@@ -2,8 +2,8 @@
 
 A tool for running a job search: a Claude-driven discovery procedure that
 screens listings against your criteria, and a browser board for tracking what
-you're doing about them. See `ARCHITECTURE.md` for the full design and
-`DISCOVERY.md` for the discovery procedure itself.
+you're doing about them. See `docs/ARCHITECTURE.md` for the full design and
+`docs/DISCOVERY.md` for the discovery procedure itself.
 
 The tool lives here, in git. Your data — criteria, candidates, notes — lives
 in a gitignored `data/` directory and never gets committed.
@@ -22,10 +22,13 @@ discovery sweep.
 - `make dev` — run the app
 - `make test` — run the test suite and check no data/ paths are tracked
 - `make check-clean` — just the data/ tracking check
+- `make lint` — ruff
+- `make typecheck` — mypy
+- `make docs` — build the Sphinx docs into `docs/_build/html`
 
 ## Status
 
 M1–M5 are in place: the core library, the Discovery review queue, the
 drag-and-drop board with mtime conflict handling, and card detail (notes,
-contacts, referral, an editable history timeline). Per `ARCHITECTURE.md`
+contacts, referral, an editable history timeline). Per `docs/ARCHITECTURE.md`
 §11, M5 is the last milestone — the tool is finished, not paused.

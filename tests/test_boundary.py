@@ -1,4 +1,4 @@
-"""The two-writer rule (ARCHITECTURE.md §4, §9): discovery writes only inbox/,
+"""The two-writer rule (docs/ARCHITECTURE.md §4, §9): discovery writes only inbox/,
 the app writes only cards/. This is a convention, not a mechanism (§12) — these
 tests are the mechanism that catches drift.
 """
@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 import yaml
 
-import core.store as store
+import src.store as store
 
 FIXTURES = Path("tests/fixtures")
 
@@ -43,7 +43,7 @@ def test_reads_never_mutate_disk(root):
 
 def test_simulated_discovery_sweep_never_touches_cards(root):
     """A discovery session is a Claude session writing YAML files directly —
-    it never calls core.store at all. Simulate that and assert cards/ is inert.
+    it never calls src.store at all. Simulate that and assert cards/ is inert.
     """
     before_cards = _hash_tree(root / "cards")
 

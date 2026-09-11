@@ -5,9 +5,9 @@ from pathlib import Path
 
 from flask import Flask, abort, jsonify, redirect, render_template, request, url_for
 
-from core import pipeline, store, views
-from core.config import DATA_DIR
-from core.models import ARCHIVE_REASONS, STAGES, Card, Contact, Referral
+from src import pipeline, store, views
+from src.config import DATA_DIR
+from src.models import ARCHIVE_REASONS, STAGES, Card, Contact, Referral
 
 BOARD_STAGES = [s for s in STAGES if s != "archived"]
 REFERRAL_STATUSES = ["none", "possible", "requested", "submitted"]
@@ -26,7 +26,7 @@ def _comp_text(comp) -> str:
 
 
 def _card_json(card: Card, mtime: float | None = None) -> dict:
-    data = {
+    data: dict[str, object] = {
         "id": card.id,
         "company": card.company,
         "company_summary": card.company_summary,
@@ -216,7 +216,9 @@ def create_app(root: Path = DATA_DIR) -> Flask:
         except store.ConflictError:
             current = store.load(card_id, root=data_root())
             current_mtime = store.mtime(card_id, root=data_root())
-            return jsonify({"error": "conflict", "card": _card_detail_json(current, current_mtime)}), 409
+            return jsonify(
+                {"error": "conflict", "card": _card_detail_json(current, current_mtime)}
+            ), 409
 
         return jsonify(_card_detail_json(card, new_mtime))
 
@@ -247,7 +249,9 @@ def create_app(root: Path = DATA_DIR) -> Flask:
         except store.ConflictError:
             current = store.load(card_id, root=data_root())
             current_mtime = store.mtime(card_id, root=data_root())
-            return jsonify({"error": "conflict", "card": _card_detail_json(current, current_mtime)}), 409
+            return jsonify(
+                {"error": "conflict", "card": _card_detail_json(current, current_mtime)}
+            ), 409
 
         return jsonify(_card_detail_json(card, new_mtime))
 

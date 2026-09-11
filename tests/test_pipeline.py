@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from core.pipeline import amend, move
-from core.store import load_cards
+from src.pipeline import amend, move
+from src.store import load_cards
 
 FIXTURES = Path("tests/fixtures")
 

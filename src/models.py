@@ -49,7 +49,7 @@ class Discovered:
 
 @dataclass
 class Assessment:
-    tier: str
+    tier: str | None
     why: str
     gap: str
 
@@ -101,8 +101,8 @@ class Card:
     notes: str = ""
 
     @classmethod
-    def from_dict(cls, data: dict) -> "Card":
-        card_id = data.get("id")
+    def from_dict(cls, data: dict) -> Card:
+        card_id = data["id"]
         loc = data.get("location") or {}
         comp = data.get("comp") or {}
         disc = data.get("discovered") or {}
