@@ -122,6 +122,8 @@ that backup. At this scale that's the right trade.
 
 - `config/criteria.example.yaml` — the full schema with placeholder values and
   comments. Copied to `data/criteria.yaml` by `make init`.
+- `config/profile.example.md` — a template with section headers and no
+  personal content. Copied to `data/profile.md` by `make init`.
 - `tests/fixtures/` — **invented** cards at fictional companies. Not scrubbed
   real ones; scrubbing leaks, and `acme-sr-mlops` is clearer anyway.
 - `DISCOVERY.md` — the procedure a Claude session follows, written generically
@@ -674,6 +676,7 @@ kanban-jobs/
     pre-commit                  # installed by `make init`; delegates to `make check-staged`
   config/
     criteria.example.yaml       # schema + placeholders, no personal values
+    profile.example.md          # template + placeholders, no personal values
   src/
     __init__.py
     config.py                   # data-dir resolution

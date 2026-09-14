@@ -7,6 +7,14 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- `config/profile.example.md` — a template for `data/profile.md`, copied by
+  `make init` the same way `criteria.example.yaml` already was. Closes the
+  gap where a new user had to dig through `ARCHITECTURE.md` to learn what
+  the file should contain.
+- README: a real Quickstart walkthrough, an explanation of how a discovery
+  sweep actually gets run (it's a Claude session, not a script), and a
+  "Making it yours" section pointing at what's safe to customize (criteria,
+  profile, board stages, archive reasons) versus what's load-bearing.
 - `CONTRIBUTING.md` and this changelog.
 - CI (GitHub Actions): lint, typecheck, test, and docs build on every PR,
   against Python 3.11 and 3.12.

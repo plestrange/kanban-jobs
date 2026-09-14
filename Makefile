@@ -10,12 +10,13 @@ venv:
 init:
 	mkdir -p data/inbox data/cards
 	test -f data/criteria.yaml || cp config/criteria.example.yaml data/criteria.yaml
+	test -f data/profile.md || cp config/profile.example.md data/profile.md
 	cp hooks/pre-commit .git/hooks/pre-commit
 	chmod +x .git/hooks/pre-commit
-	@echo "data/ ready; pre-commit hook installed. Edit data/criteria.yaml and write data/profile.md next."
+	@echo "data/ ready; pre-commit hook installed. Edit data/criteria.yaml and data/profile.md next."
 
 dev:
-	FLASK_APP=app.server FLASK_DEBUG=1 flask run
+	FLASK_APP=app.server FLASK_DEBUG=1 flask run --port 5050
 
 test:
 	pytest
