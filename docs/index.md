@@ -8,5 +8,5 @@ you're doing about them.
 :maxdepth: 2
 
 ARCHITECTURE
-DISCOVERY
+FIND-JOBS
 ```

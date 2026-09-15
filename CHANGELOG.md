@@ -20,13 +20,15 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   against Python 3.11 and 3.12.
 - `LICENSE` (MIT).
 - Sphinx documentation (`make docs`, `make docs-serve`), with `myst-parser`
-  rendering `docs/ARCHITECTURE.md` and `docs/DISCOVERY.md` directly.
+  rendering `docs/ARCHITECTURE.md` and `docs/FIND-JOBS.md` directly.
 - `make lint` (ruff) and `make typecheck` (mypy).
 - `make venv`, backed by `uv` and `uv.lock` — exact, reproducible dependency
   versions instead of `>=` floors, used identically by local dev and CI.
 
 ### Changed
 
+- `DISCOVERY.md` renamed to `FIND-JOBS.md` — a more descriptive name for
+  the procedure it documents.
 - Project renamed from Job Pipeline to Kanban Jobs, ahead of publishing.
 - Machine-wide Python management moved to pyenv (global default 3.12.14);
   the interpreter version for this project itself is governed by

@@ -3,7 +3,7 @@
 A tool for running a job search: a Claude-driven discovery procedure that
 screens listings against your criteria, and a browser board for tracking what
 you're doing about them. See `docs/ARCHITECTURE.md` for the full design and
-`docs/DISCOVERY.md` for the discovery procedure itself.
+`docs/FIND-JOBS.md` for the discovery procedure itself.
 
 The tool lives here, in git. Your data — criteria, candidates, notes — lives
 in a gitignored `data/` directory and never gets committed. Fork this repo
@@ -42,17 +42,17 @@ it finds in the Discovery tab.
 ### Running a discovery sweep
 
 Discovery isn't a script — it's a Claude session working through
-`docs/DISCOVERY.md`, using `data/criteria.yaml` and `data/profile.md` as
+`docs/FIND-JOBS.md`, using `data/criteria.yaml` and `data/profile.md` as
 inputs. Open a Claude Code session with this repo as the working directory
 and ask it to run one, e.g.:
 
-> Run a discovery sweep per docs/DISCOVERY.md.
+> Run a discovery sweep per docs/FIND-JOBS.md.
 
 It reads your criteria and profile, searches, screens, and writes results to
 `data/inbox/`. Nothing is added to `data/cards/` — reviewing what landed in
 the Discovery tab (mark each **Interested** or **Pass**) is what moves a
 candidate onto the board. Run a sweep by hand, monthly-ish; nothing here is
-scheduled or automatic (see `docs/DISCOVERY.md` for why).
+scheduled or automatic (see `docs/FIND-JOBS.md` for why).
 
 ## Commands
 

@@ -126,7 +126,7 @@ that backup. At this scale that's the right trade.
   personal content. Copied to `data/profile.md` by `make init`.
 - `tests/fixtures/` — **invented** cards at fictional companies. Not scrubbed
   real ones; scrubbing leaks, and `acme-sr-mlops` is clearer anyway.
-- `DISCOVERY.md` — the procedure a Claude session follows, written generically
+- `FIND-JOBS.md` — the procedure a Claude session follows, written generically
   against whatever `criteria.yaml` it's pointed at.
 
 ---
@@ -379,7 +379,7 @@ the same reason `stage` is: `grep -l "reason: rejected" cards/*.yaml` answers a
 question you'll actually ask.
 
 **Archiving, for any reason, is permanent as far as discovery is concerned.** A
-sweep never re-surfaces an archived card (DISCOVERY.md Phase 3). The old draft
+sweep never re-surfaces an archived card (FIND-JOBS.md Phase 3). The old draft
 specified this only for `dropped` and was silent on the others; one lane makes it
 uniform. The cost is that a role you archived as `expired` a year ago won't come
 back when it reposts.
@@ -671,7 +671,7 @@ kanban-jobs/
     conf.py                     # Sphinx config; myst-parser renders these .md files directly
     index.md
     ARCHITECTURE.md
-    DISCOVERY.md                 # the procedure a search session follows
+    FIND-JOBS.md                 # the procedure a search session follows
   hooks/
     pre-commit                  # installed by `make init`; delegates to `make check-staged`
   config/
@@ -718,7 +718,7 @@ served as static files. `make dev` starts it.
 
 ## 8. Discovery workflow
 
-**`DISCOVERY.md` is the full procedure**; it ships in the repo and is what a
+**`FIND-JOBS.md` is the full procedure**; it ships in the repo and is what a
 session reads before starting. Summary:
 
 ### One job, run by hand
@@ -744,7 +744,7 @@ JavaScript-rendered and unreadable through a normal fetch.
 
 **Aggregator boards for breadth** — Built In, RemoteRocketship, hiddenjobs.dev,
 startup.jobs, HN "Who is hiring". Ranked with their known weaknesses in
-`DISCOVERY.md`.
+`FIND-JOBS.md`.
 
 **No credentialed sources.** LinkedIn and Indeed are login-walled, and automated
 access to a logged-in session violates their terms and risks the account. The
@@ -842,7 +842,7 @@ there the way every later card will.
 
 **The two-writer rule is a convention, not a mechanism.** Nothing stops a
 discovery session writing `cards/`. Mitigate by putting the rule at the top of
-`DISCOVERY.md` where a session reads it first, exposing no `store.py` function
+`FIND-JOBS.md` where a session reads it first, exposing no `store.py` function
 that writes `cards/` from a discovery context, and keeping `test_boundary.py`
 green.
 

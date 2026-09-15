@@ -20,11 +20,11 @@ exclusions:
 
 # Sectors worth calling out as a positive signal in `why` when a posting
 # matches — not a filter, doesn't override tier or drop anything. See
-# DISCOVERY.md Phase 5.
+# FIND-JOBS.md Phase 5.
 interests: []
 
 # Companies polled directly via their ATS API, regardless of whether a
-# search surfaces them. See DISCOVERY.md Phase 2.
+# search surfaces them. See FIND-JOBS.md Phase 2.
 watchlist:
   - {company: "example-co", ats: greenhouse, token: "example-co"}
 
