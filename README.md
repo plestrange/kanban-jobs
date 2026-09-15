@@ -19,8 +19,8 @@ source .venv/bin/activate
 make init           # creates data/, copies the two templates below, installs the pre-commit hook
 ```
 
-`make init` copies two templates into the gitignored `data/` directory —
-fill both in before your first sweep:
+`make init` copies two templates from the tracked `config/` directory into
+the gitignored `data/` directory — fill both in before your first sweep:
 
 - **`data/criteria.yaml`** — titles, level, location rules, exclusions, the
   companies you want watched directly. Comments in the file explain each
