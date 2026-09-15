@@ -1,6 +1,6 @@
 (function () {
   var reasonOptions = document.getElementById("reason-options");
-  var dragCard = null;
+  var dragListing = null;
 
   function dropzones() {
     return Array.prototype.slice.call(document.querySelectorAll("[data-dropzone]"));
@@ -13,14 +13,14 @@
   function updateCount(stage) {
     var zone = columnFor(stage);
     if (!zone) return;
-    var count = zone.querySelectorAll(".card").length;
+    var count = zone.querySelectorAll(".listing").length;
     var head = zone.closest(".col, .archive-lane").querySelector(".col-count");
     if (head) head.textContent = count;
   }
 
   function updateEmptyMarker(zone) {
     var empty = zone.querySelector(".col-empty");
-    if (empty) empty.hidden = zone.querySelectorAll(".card").length > 0;
+    if (empty) empty.hidden = zone.querySelectorAll(".listing").length > 0;
   }
 
   function refreshZone(stage) {
@@ -35,24 +35,24 @@
   }
 
   document.addEventListener("dragstart", function (e) {
-    var card = e.target.closest ? e.target.closest(".card[draggable]") : null;
-    if (!card) return;
-    dragCard = card;
+    var listing = e.target.closest ? e.target.closest(".listing[draggable]") : null;
+    if (!listing) return;
+    dragListing = listing;
     e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("text/plain", card.dataset.id);
-    setTimeout(function () { card.classList.add("dragging"); }, 0);
+    e.dataTransfer.setData("text/plain", listing.dataset.id);
+    setTimeout(function () { listing.classList.add("dragging"); }, 0);
   });
 
   document.addEventListener("dragend", function (e) {
-    var card = e.target.closest ? e.target.closest(".card") : null;
-    if (card) card.classList.remove("dragging");
-    dragCard = null;
+    var listing = e.target.closest ? e.target.closest(".listing") : null;
+    if (listing) listing.classList.remove("dragging");
+    dragListing = null;
     clearDragOver();
   });
 
   document.addEventListener("dragover", function (e) {
     var zone = e.target.closest ? e.target.closest("[data-dropzone]") : null;
-    if (!zone || !dragCard) return;
+    if (!zone || !dragListing) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
     zone.classList.add("drag-over");
@@ -66,25 +66,25 @@
   document.addEventListener("drop", function (e) {
     var zone = e.target.closest ? e.target.closest("[data-dropzone]") : null;
     clearDragOver();
-    if (!zone || !dragCard) return;
+    if (!zone || !dragListing) return;
     e.preventDefault();
 
-    var card = dragCard;
-    dragCard = null;
+    var listing = dragListing;
+    dragListing = null;
 
     var targetStage = zone.dataset.stage;
-    var sourceStage = card.dataset.stage;
+    var sourceStage = listing.dataset.stage;
     if (targetStage === sourceStage) return;
 
     if (targetStage === "archived") {
-      openArchivePrompt(card, zone);
+      openArchivePrompt(listing, zone);
     } else {
-      performMove(card, zone, targetStage, null, "");
+      performMove(listing, zone, targetStage, null, "");
     }
   });
 
-  function openArchivePrompt(card, zone) {
-    if (card.querySelector(".archive-prompt")) return;
+  function openArchivePrompt(listing, zone) {
+    if (listing.querySelector(".archive-prompt")) return;
 
     var prompt = document.createElement("div");
     prompt.className = "archive-prompt";
@@ -114,20 +114,20 @@
     prompt.appendChild(select);
     prompt.appendChild(note);
     prompt.appendChild(actions);
-    card.appendChild(prompt);
-    card.classList.add("prompting");
+    listing.appendChild(prompt);
+    listing.classList.add("prompting");
     select.focus();
 
     function close() {
       prompt.remove();
-      card.classList.remove("prompting");
+      listing.classList.remove("prompting");
     }
 
     confirmBtn.addEventListener("click", function () {
       var reason = select.value;
       var noteText = note.value.trim();
       close();
-      performMove(card, zone, "archived", reason, noteText);
+      performMove(listing, zone, "archived", reason, noteText);
     });
     cancelBtn.addEventListener("click", close);
     note.addEventListener("keydown", function (e) {
@@ -141,10 +141,10 @@
     });
   }
 
-  function syncArchiveDisplay(card, data) {
-    var foot = card.querySelector(".card-foot");
+  function syncArchiveDisplay(listing, data) {
+    var foot = listing.querySelector(".listing-foot");
     var chip = foot.querySelector(".chip");
-    var note = card.querySelector(".card-note");
+    var note = listing.querySelector(".listing-note");
 
     if (data.stage !== "archived") {
       if (chip) chip.remove();
@@ -162,7 +162,7 @@
     if (data.note) {
       if (!note) {
         note = document.createElement("p");
-        note.className = "card-note";
+        note.className = "listing-note";
         foot.parentNode.insertBefore(note, foot);
       }
       note.textContent = data.note;
@@ -171,23 +171,23 @@
     }
   }
 
-  function performMove(card, zone, targetStage, reason, note) {
-    var originalParent = card.parentNode;
-    var originalNext = card.nextSibling;
-    var originalStage = card.dataset.stage;
-    var originalMtime = card.dataset.mtime;
+  function performMove(listing, zone, targetStage, reason, note) {
+    var originalParent = listing.parentNode;
+    var originalNext = listing.nextSibling;
+    var originalStage = listing.dataset.stage;
+    var originalMtime = listing.dataset.mtime;
 
-    zone.appendChild(card);
-    card.dataset.stage = targetStage;
-    card.classList.toggle("is-archived", targetStage === "archived");
-    card.classList.add("is-moving");
+    zone.appendChild(listing);
+    listing.dataset.stage = targetStage;
+    listing.classList.toggle("is-archived", targetStage === "archived");
+    listing.classList.add("is-moving");
     refreshZone(originalStage);
     refreshZone(targetStage);
 
     var body = { to: targetStage, note: note || "", mtime: parseFloat(originalMtime) };
     if (reason) body.reason = reason;
 
-    fetch("/api/cards/" + encodeURIComponent(card.dataset.id) + "/stage", {
+    fetch("/api/interview-board/" + encodeURIComponent(listing.dataset.id) + "/stage", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
@@ -197,26 +197,26 @@
         return res.json();
       })
       .then(function (data) {
-        card.classList.remove("is-moving");
-        card.dataset.mtime = data.mtime;
-        syncArchiveDisplay(card, data);
+        listing.classList.remove("is-moving");
+        listing.dataset.mtime = data.mtime;
+        syncArchiveDisplay(listing, data);
       })
       .catch(function () {
-        card.classList.remove("is-moving");
-        card.dataset.stage = originalStage;
-        card.classList.toggle("is-archived", originalStage === "archived");
-        originalParent.insertBefore(card, originalNext);
+        listing.classList.remove("is-moving");
+        listing.dataset.stage = originalStage;
+        listing.classList.toggle("is-archived", originalStage === "archived");
+        originalParent.insertBefore(listing, originalNext);
         refreshZone(originalStage);
         refreshZone(targetStage);
-        card.classList.add("drop-error");
-        setTimeout(function () { card.classList.remove("drop-error"); }, 1600);
+        listing.classList.add("drop-error");
+        setTimeout(function () { listing.classList.remove("drop-error"); }, 1600);
       });
   }
 
   document.addEventListener("click", function (e) {
-    if (e.target.closest && (e.target.closest(".card-link") || e.target.closest(".archive-prompt"))) return;
-    var card = e.target.closest ? e.target.closest(".card[data-id]") : null;
-    if (!card) return;
-    window.location.href = "/cards/" + encodeURIComponent(card.dataset.id);
+    if (e.target.closest && (e.target.closest(".listing-link") || e.target.closest(".archive-prompt"))) return;
+    var listing = e.target.closest ? e.target.closest(".listing[data-id]") : null;
+    if (!listing) return;
+    window.location.href = "/interview-board/" + encodeURIComponent(listing.dataset.id);
   });
 })();

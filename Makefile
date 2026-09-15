@@ -8,7 +8,7 @@ venv:
 	@echo "venv ready on $$(.venv/bin/python3 --version) — activate with: source .venv/bin/activate"
 
 init:
-	mkdir -p data/inbox data/cards
+	mkdir -p data/listings data/interview-board
 	test -f data/criteria.yaml || cp config/criteria.example.yaml data/criteria.yaml
 	test -f data/profile.md || cp config/profile.example.md data/profile.md
 	cp hooks/pre-commit .git/hooks/pre-commit

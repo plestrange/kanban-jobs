@@ -15,21 +15,21 @@ def root(tmp_path):
     return dest
 
 
-def test_load_cards_and_inbox(root):
-    cards = store.load_cards(root=root)
-    inbox = store.load_inbox(root=root)
-    assert {c.id for c in cards} == {"acme-sr-mlops", "globex-mle", "initech-platform"}
-    assert {c.id for c in inbox} == {"umbrella-mlops", "hooli-ml-eng"}
+def test_load_interview_board_and_listings(root):
+    board = store.load_interview_board(root=root)
+    listings = store.load_listings(root=root)
+    assert {c.id for c in board} == {"acme-sr-mlops", "globex-mle", "initech-platform"}
+    assert {c.id for c in listings} == {"umbrella-mlops", "hooli-ml-eng"}
 
 
 def test_company_summary_defaults_to_empty_string(root):
-    acme = next(c for c in store.load_cards(root=root) if c.id == "acme-sr-mlops")
-    globex = next(c for c in store.load_cards(root=root) if c.id == "globex-mle")
+    acme = next(c for c in store.load_interview_board(root=root) if c.id == "acme-sr-mlops")
+    globex = next(c for c in store.load_interview_board(root=root) if c.id == "globex-mle")
     assert acme.company_summary == "Industrial robotics company."
     assert globex.company_summary == ""  # fixture predates the field
 
 
-def test_load_finds_card_in_either_dir(root):
+def test_load_finds_listing_in_either_dir(root):
     assert store.load("acme-sr-mlops", root=root).company == "Acme Robotics"
     assert store.load("umbrella-mlops", root=root).company == "Umbrella Analytics"
 
@@ -40,12 +40,12 @@ def test_load_missing_raises(root):
 
 
 def test_save_is_atomic_and_roundtrips(root):
-    card = store.load("acme-sr-mlops", root=root)
-    path = root / "cards" / "acme-sr-mlops.yaml"
+    listing = store.load("acme-sr-mlops", root=root)
+    path = root / "interview-board" / "acme-sr-mlops.yaml"
     mtime = path.stat().st_mtime
-    card.notes = "updated during test"
+    listing.notes = "updated during test"
 
-    store.save(card, mtime, root=root)
+    store.save(listing, mtime, root=root)
 
     reloaded = store.load("acme-sr-mlops", root=root)
     assert reloaded.notes == "updated during test"
@@ -53,29 +53,29 @@ def test_save_is_atomic_and_roundtrips(root):
 
 
 def test_save_raises_conflict_on_stale_mtime(root):
-    card = store.load("acme-sr-mlops", root=root)
-    path = root / "cards" / "acme-sr-mlops.yaml"
+    listing = store.load("acme-sr-mlops", root=root)
+    path = root / "interview-board" / "acme-sr-mlops.yaml"
     stale_mtime = path.stat().st_mtime
 
     other = store.load("acme-sr-mlops", root=root)
     other.notes = "changed elsewhere first"
     store.save(other, stale_mtime, root=root)
 
-    card.notes = "conflicting change"
+    listing.notes = "conflicting change"
     with pytest.raises(store.ConflictError):
-        store.save(card, stale_mtime, root=root)
+        store.save(listing, stale_mtime, root=root)
 
 
 def test_review_interested_moves_to_shortlist(root):
-    card = store.review("umbrella-mlops", interested=True, root=root)
-    assert card.stage == "shortlist"
-    assert not (root / "inbox" / "umbrella-mlops.yaml").exists()
-    assert (root / "cards" / "umbrella-mlops.yaml").exists()
-    assert len(card.history) == 1
+    listing = store.review("umbrella-mlops", interested=True, root=root)
+    assert listing.stage == "shortlist"
+    assert not (root / "listings" / "umbrella-mlops.yaml").exists()
+    assert (root / "interview-board" / "umbrella-mlops.yaml").exists()
+    assert len(listing.history) == 1
 
 
 def test_review_pass_archives_with_reason(root):
-    card = store.review("hooli-ml-eng", interested=False, root=root)
-    assert card.stage == "archived"
-    assert card.reason == "passed"
-    assert not (root / "inbox" / "hooli-ml-eng.yaml").exists()
+    listing = store.review("hooli-ml-eng", interested=False, root=root)
+    assert listing.stage == "archived"
+    assert listing.reason == "passed"
+    assert not (root / "listings" / "hooli-ml-eng.yaml").exists()

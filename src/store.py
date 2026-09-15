@@ -8,11 +8,11 @@ from pathlib import Path
 import yaml
 
 from .config import DATA_DIR
-from .models import Card
+from .models import Listing
 from .pipeline import move
 
-INBOX = "inbox"
-CARDS = "cards"
+LISTINGS = "listings"
+INTERVIEW_BOARD = "interview-board"
 
 
 class ConflictError(Exception):
@@ -27,32 +27,32 @@ def _str_presenter(dumper: yaml.SafeDumper, data: str):
 yaml.add_representer(str, _str_presenter, Dumper=yaml.SafeDumper)
 
 
-def _load_dir(dir_path: Path) -> list[Card]:
+def _load_dir(dir_path: Path) -> list[Listing]:
     if not dir_path.exists():
         return []
-    cards = []
+    listings = []
     for path in sorted(dir_path.glob("*.yaml")):
         with path.open() as f:
             data = yaml.safe_load(f)
-        cards.append(Card.from_dict(data))
-    return cards
+        listings.append(Listing.from_dict(data))
+    return listings
 
 
-def load_inbox(root: Path = DATA_DIR) -> list[Card]:
-    return _load_dir(root / INBOX)
+def load_listings(root: Path = DATA_DIR) -> list[Listing]:
+    return _load_dir(root / LISTINGS)
 
 
-def load_cards(root: Path = DATA_DIR) -> list[Card]:
-    return _load_dir(root / CARDS)
+def load_interview_board(root: Path = DATA_DIR) -> list[Listing]:
+    return _load_dir(root / INTERVIEW_BOARD)
 
 
-def load(card_id: str, root: Path = DATA_DIR) -> Card:
-    for sub in (CARDS, INBOX):
-        path = root / sub / f"{card_id}.yaml"
+def load(listing_id: str, root: Path = DATA_DIR) -> Listing:
+    for sub in (INTERVIEW_BOARD, LISTINGS):
+        path = root / sub / f"{listing_id}.yaml"
         if path.exists():
             with path.open() as f:
-                return Card.from_dict(yaml.safe_load(f))
-    raise FileNotFoundError(card_id)
+                return Listing.from_dict(yaml.safe_load(f))
+    raise FileNotFoundError(listing_id)
 
 
 def _write_atomic(path: Path, data: dict) -> None:
@@ -67,38 +67,39 @@ def _write_atomic(path: Path, data: dict) -> None:
         raise
 
 
-def mtime(card_id: str, root: Path = DATA_DIR) -> float:
-    return (root / CARDS / f"{card_id}.yaml").stat().st_mtime
+def mtime(listing_id: str, root: Path = DATA_DIR) -> float:
+    return (root / INTERVIEW_BOARD / f"{listing_id}.yaml").stat().st_mtime
 
 
-def save(card: Card, expected_mtime: float | None, root: Path = DATA_DIR) -> float:
-    """Write a card to cards/. Raises ConflictError if it changed on disk since load."""
-    path = root / CARDS / f"{card.id}.yaml"
+def save(listing: Listing, expected_mtime: float | None, root: Path = DATA_DIR) -> float:
+    """Write to interview-board/. Raises ConflictError if it changed on disk since load."""
+    path = root / INTERVIEW_BOARD / f"{listing.id}.yaml"
     if path.exists():
         actual_mtime = path.stat().st_mtime
         if expected_mtime is None or actual_mtime != expected_mtime:
-            raise ConflictError(f"{card.id} changed on disk since it was loaded")
-    _write_atomic(path, card.to_dict())
+            raise ConflictError(f"{listing.id} changed on disk since it was loaded")
+    _write_atomic(path, listing.to_dict())
     return path.stat().st_mtime
 
 
 def review(
-    card_id: str,
+    listing_id: str,
     interested: bool,
     note: str = "",
     root: Path = DATA_DIR,
     today: date | None = None,
-) -> Card:
-    """The seam: inbox/ -> cards/. Seeds history. Never touches an existing cards/ file."""
-    inbox_path = root / INBOX / f"{card_id}.yaml"
-    with inbox_path.open() as f:
-        card = Card.from_dict(yaml.safe_load(f))
+) -> Listing:
+    """The seam: listings/ -> interview-board/. Seeds history. Never touches an existing
+    interview-board/ file."""
+    listing_path = root / LISTINGS / f"{listing_id}.yaml"
+    with listing_path.open() as f:
+        listing = Listing.from_dict(yaml.safe_load(f))
 
     if interested:
-        move(card, "shortlist", note=note, occurred=today)
+        move(listing, "shortlist", note=note, occurred=today)
     else:
-        move(card, "archived", reason="passed", note=note, occurred=today)
+        move(listing, "archived", reason="passed", note=note, occurred=today)
 
-    _write_atomic(root / CARDS / f"{card.id}.yaml", card.to_dict())
-    inbox_path.unlink()
-    return card
+    _write_atomic(root / INTERVIEW_BOARD / f"{listing.id}.yaml", listing.to_dict())
+    listing_path.unlink()
+    return listing

@@ -77,8 +77,8 @@ class Referral:
 
 
 @dataclass
-class Card:
-    # discovery zone — written by search sessions, frozen at promotion
+class Listing:
+    # search zone — written by job search sweeps, frozen at promotion
     id: str
     req_id: str | None
     company: str
@@ -93,7 +93,7 @@ class Card:
     company_summary: str = ""  # one line: what the company does, at a glance
 
     # pipeline zone — written by the app, yours alone
-    stage: str | None = None  # None while the card still lives in inbox/
+    stage: str | None = None  # None while the listing still lives in listings/
     reason: str | None = None
     history: list[HistoryEntry] = field(default_factory=list)
     contacts: list[Contact] = field(default_factory=list)
@@ -101,8 +101,8 @@ class Card:
     notes: str = ""
 
     @classmethod
-    def from_dict(cls, data: dict) -> Card:
-        card_id = data["id"]
+    def from_dict(cls, data: dict) -> Listing:
+        listing_id = data["id"]
         loc = data.get("location") or {}
         comp = data.get("comp") or {}
         disc = data.get("discovered") or {}
@@ -111,17 +111,17 @@ class Card:
 
         stage = data.get("stage")
         if stage is not None and stage not in STAGES:
-            raise ValueError(f"{card_id}: unknown stage {stage!r}")
+            raise ValueError(f"{listing_id}: unknown stage {stage!r}")
 
         reason = data.get("reason")
         if reason is not None and reason not in ARCHIVE_REASONS:
-            raise ValueError(f"{card_id}: unknown reason {reason!r}")
+            raise ValueError(f"{listing_id}: unknown reason {reason!r}")
         if stage == "archived" and reason is None:
-            raise ValueError(f"{card_id}: archived card is missing a reason")
+            raise ValueError(f"{listing_id}: archived listing is missing a reason")
 
         tier = assess.get("tier")
         if tier is not None and tier not in TIERS:
-            raise ValueError(f"{card_id}: unknown tier {tier!r}")
+            raise ValueError(f"{listing_id}: unknown tier {tier!r}")
 
         history = [
             HistoryEntry(
@@ -138,7 +138,7 @@ class Card:
         ]
 
         return cls(
-            id=card_id,
+            id=listing_id,
             req_id=data.get("req_id"),
             company=data["company"],
             title=data["title"],

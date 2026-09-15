@@ -1,34 +1,35 @@
-# Discovery Procedure
+# Job Search Procedure
 
-Instructions for a Claude session running a discovery sweep. Read this in full
+Instructions for a Claude session running a job search sweep. Read this in full
 before starting.
 
-Discovery finds candidate listings, screens them against the user's criteria, and
-writes them to `data/inbox/` for the user to review in the Discovery
+A sweep finds candidate listings, screens them against the user's criteria, and
+writes them to `data/listings/` for the user to review in the Job Listings
 tab. It is a judgment task, not a scraper — the value is in the screening, not
 the volume.
 
-This is the only thing discovery does. It is a Claude session, started by hand,
-monthly-ish. Nothing here runs on a schedule and nothing re-checks cards already
-in play.
+This is the only thing a sweep does. It is a Claude session, started by hand,
+monthly-ish. Nothing here runs on a schedule and nothing re-checks listings
+already in play.
 
 ---
 
 ## The one rule
 
-**Never write to `data/cards/`.**
+**Never write to `data/interview-board/`.**
 
-`cards/` holds listings the user has already reviewed and is actively working. A
-discovery pass writes **only** `inbox/`. It reads `cards/` — that's how it avoids
-re-surfacing things the user already decided about — and it never writes there.
+`interview-board/` holds listings the user has already reviewed and is
+actively working. A sweep writes **only** `listings/`. It reads
+`interview-board/` — that's how it avoids re-surfacing things the user already
+decided about — and it never writes there.
 
-If a pass learns that a card in play has changed — posting closed, comp range
-moved, duplicate found under a new req — it **says so in the closing summary** and
-stops. There is no file it writes and no badge it raises. The user decides what to
-do with it, in the app, by hand.
+If a sweep learns that a listing in play has changed — posting closed, comp
+range moved, duplicate found under a new req — it **says so in the closing
+summary** and stops. There is no file it writes and no badge it raises. The
+user decides what to do with it, in the app, by hand.
 
-Rewriting a card mid-interview-loop is the one failure this whole design exists
-to prevent.
+Rewriting a listing mid-interview-loop is the one failure this whole design
+exists to prevent.
 
 ---
 
@@ -38,8 +39,8 @@ to prevent.
 |---|---|
 | `data/criteria.yaml` | Titles, level, location rules, exclusions, watchlist, fit rubric |
 | `data/profile.md` | The user's background — what the fit assessment is written *against* |
-| `data/inbox/*.yaml` | Already-surfaced candidates awaiting review |
-| `data/cards/*.yaml` | Already-decided listings — including passed ones |
+| `data/listings/*.yaml` | Already-surfaced candidates awaiting review |
+| `data/interview-board/*.yaml` | Already-decided listings — including passed ones |
 
 All paths are relative to the repo root. There is no environment variable to
 resolve and no configured location — see design/ARCHITECTURE.md §2.
@@ -53,7 +54,7 @@ twenty roles they already rejected.
 
 1. Read `criteria.yaml` and `profile.md`.
 2. Build the **seen set**: every `req_id`, and every `(company, normalized title,
-   location)` triple, across `inbox/` and `cards/`.
+   location)` triple, across `listings/` and `interview-board/`.
 3. Build query templates from the criteria — the cross product of
    `titles + title_aliases` against `location.accept`. The search terms are
    rarely the posted titles: a role advertised as "ML Platform Engineer" or
@@ -142,10 +143,10 @@ three URLs. Dedupe has to separate these cases.
    `team` for each so the user can tell them apart, and give each a distinct
    filename (see below).
 
-A candidate already in `cards/` at stage `archived` is one the user is not
-continuing with — passed on, rejected, withdrawn from, or expired. Do not
+A candidate already in `interview-board/` at stage `archived` is one the user is
+not continuing with — passed on, rejected, withdrawn from, or expired. Do not
 re-surface it, whatever the `reason` says. That is the entire reason archived
-cards are kept rather than deleted.
+listings are kept rather than deleted.
 
 ### Filenames
 
@@ -217,22 +218,23 @@ Then write the assessment against `profile.md`:
 
 ## Phase 6 — Write
 
-**New candidates** → one `inbox/<id>.yaml` per survivor, schema per
-design/ARCHITECTURE.md §5.2. Fill the discovery zone completely; leave the pipeline zone
+**New candidates** → one `listings/<id>.yaml` per survivor, schema per
+design/ARCHITECTURE.md §5.2. Fill the search zone completely; leave the pipeline zone
 out entirely — the app writes it at review.
 
 Always set `discovered.via` to the source that surfaced it. After a few sweeps
 this tells you which sources produce candidates that get shortlisted and which to
 stop querying.
 
-**Existing cards** → nothing is written, ever. If the sweep noticed something
-about a card in play, it goes in the closing summary as a sentence:
+**Existing listings** → nothing is written, ever. If the sweep noticed something
+about a listing in play, it goes in the closing summary as a sentence:
 
-> Anthropic ML Platform (card at stage `technical`): the original Greenhouse
+> Anthropic ML Platform (listing at stage `technical`): the original Greenhouse
 > posting 404s, but the same role is live at req 6141572004 with the range raised
 > to $180k–$225k.
 
-Short and factual, in conversation. Do not write a file and do not edit the card.
+Short and factual, in conversation. Do not write a file and do not edit the
+listing.
 
 ---
 
@@ -241,33 +243,34 @@ Short and factual, in conversation. Do not write a file and do not edit the card
 Cap a sweep at roughly **25 new candidates**, prioritized by tier. If the sweep
 found more, keep the strongest and say so in your summary.
 
-Not a technical limit. Twenty cards is a review session the user will sit down
-and clear; two hundred is a chore they'll skip, and a skipped queue means a stale
-board. Small and frequent beats large and rare.
+Not a technical limit. Twenty listings is a review session the user will sit
+down and clear; two hundred is a chore they'll skip, and a skipped queue means
+a stale board. Small and frequent beats large and rare.
 
 ---
 
 ## Referral lookup — optional, and not part of a sweep
 
 Whether the user knows anyone at a company changes the odds more than almost
-anything else on the card. It is worth capturing, and it does **not** belong in
-the sweep.
+anything else on the listing. It is worth capturing, and it does **not** belong
+in the sweep.
 
 **Why it's separate.** Two reasons, and the second is non-negotiable:
 
 1. **Wrong volume.** A sweep screens dozens of candidates, most of which get
    passed on. Checking connections at all of them is wasted effort. The question
    is only worth asking about the handful the user has already shortlisted.
-2. **It writes to a card.** `referral` lives in the pipeline zone of a card in
-   `cards/`, and a discovery session may never write there. See "The one rule".
+2. **It writes to a listing.** `referral` lives in the pipeline zone of a
+   listing on the interview board, and a sweep may never write there. See "The
+   one rule".
 
-**So a session never records a referral.** It can *find* the information and
-report it in conversation; the user records it in the app's card detail view.
-That division is the whole point — if a session finds itself about to edit a
-card, it has taken a wrong turn.
+**So a sweep never records a referral.** It can *find* the information and
+report it in conversation; the user records it in the app's listing detail
+view. That division is the whole point — if a sweep finds itself about to edit
+a listing, it has taken a wrong turn.
 
-**When to do it.** After shortlisting, on the cards the user is actually going to
-apply to. A handful at a time.
+**When to do it.** After shortlisting, on the listings the user is actually
+going to apply to. A handful at a time.
 
 **How, optionally.** If the user has [Claude in
 Chrome](https://support.claude.com/en/articles/12012173-get-started-with-claude-in-chrome)
@@ -282,7 +285,7 @@ lookup on a named company, not a way to page through job search results in bulk;
 that would be the automated access these sites' terms prohibit, arrived at
 sideways.
 
-**What gets recorded**, in the card's pipeline zone:
+**What gets recorded**, in the listing's pipeline zone:
 
 ```yaml
 referral:
@@ -303,7 +306,7 @@ State these plainly rather than working around them:
 - Cannot apply to anything.
 - Cannot see roles behind logins — LinkedIn, most company talent networks. The
   Chrome route above is a targeted exception for referral lookups, not a way
-  around this for bulk discovery.
+  around this for bulk searching.
 - Cannot confirm a posting is genuinely open. A live URL means the page exists,
   not that the req is unfilled.
 - Cannot judge team quality, manager, or how real a stated remote policy is.
@@ -320,5 +323,5 @@ Report to the user:
 - Anything notable — a strong-fit role that fails a location filter is worth
   naming, since it may be worth one email asking whether the restriction is
   negotiable.
-- Anything noticed about a card already in `cards/` — see Phase 6. Lead with
-  these if a card in an active stage is involved.
+- Anything noticed about a listing already in `interview-board/` — see Phase 6.
+  Lead with these if a listing in an active stage is involved.

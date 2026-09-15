@@ -3,8 +3,8 @@ Copied to data/profile.md by `make init`. Edit the copy, not this file — this
 one ships in git as a template with no personal information; yours is
 gitignored (see docs/design/ARCHITECTURE.md §2 and §9).
 
-This is what a discovery session assesses every listing against: the `why`
-and `gap` lines on each card come from comparing the posting to what's
+This is what a job search sweep assesses every listing against: the `why`
+and `gap` lines on each listing come from comparing the posting to what's
 written here. Thin or vague content here produces thin or vague assessments —
 write it with the specificity of a cover letter, not a resume bullet list.
 -->
@@ -38,5 +38,5 @@ generic fit judgment into one calibrated to *this* search — it should track
 ## Notable work
 
 A handful of concrete examples — specific projects, systems, outcomes — a
-discovery session can cite directly in a `why` line. "Built a model registry
+sweep can cite directly in a `why` line. "Built a model registry
 with staged rollouts and drift detection" beats "strong MLOps background."

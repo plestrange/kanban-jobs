@@ -37,7 +37,7 @@
 
   function submitReview(row, interested, note) {
     setRowBusy(row, true);
-    fetch("/api/inbox/" + encodeURIComponent(row.dataset.id) + "/review", {
+    fetch("/api/listings/" + encodeURIComponent(row.dataset.id) + "/review", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ interested: interested, note: note || "" }),

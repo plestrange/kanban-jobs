@@ -1,6 +1,6 @@
 (function () {
   var root = document.querySelector(".detail");
-  var cardId = root.dataset.id;
+  var listingId = root.dataset.id;
   var mtime = parseFloat(root.dataset.mtime);
 
   function showState(el, text, ok) {
@@ -41,7 +41,7 @@
   var notes = document.getElementById("notes");
   var notesState = document.getElementById("notes-state");
   notes.addEventListener("blur", function () {
-    patch("/api/cards/" + encodeURIComponent(cardId), { notes: notes.value }, notesState);
+    patch("/api/interview-board/" + encodeURIComponent(listingId), { notes: notes.value }, notesState);
   });
 
   // Referral
@@ -52,7 +52,7 @@
 
   function saveReferral() {
     patch(
-      "/api/cards/" + encodeURIComponent(cardId),
+      "/api/interview-board/" + encodeURIComponent(listingId),
       { referral: { status: refStatus.value, via: refVia.value, checked: refChecked.value || null } },
       refState
     );
@@ -79,7 +79,7 @@
   }
 
   function saveContacts() {
-    patch("/api/cards/" + encodeURIComponent(cardId), { contacts: collectContacts() }, contactsState);
+    patch("/api/interview-board/" + encodeURIComponent(listingId), { contacts: collectContacts() }, contactsState);
   }
 
   contactsList.addEventListener(
@@ -118,7 +118,7 @@
     var note = row.querySelector(".h-note").value;
     var stateEl = row.querySelector(".save-state");
     patch(
-      "/api/cards/" + encodeURIComponent(cardId) + "/history/" + index,
+      "/api/interview-board/" + encodeURIComponent(listingId) + "/history/" + index,
       { occurred: occurred, note: note },
       stateEl
     );

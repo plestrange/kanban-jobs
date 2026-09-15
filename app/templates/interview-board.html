@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Interview Board — Kanban Jobs{% endblock %}
+
+{% block content %}
+<div class="board">
+  {% for stage in board_stages %}
+  <section class="col">
+    <header class="col-head">
+      <h2>{{ stage.replace('-', ' ') | title }}</h2>
+      <span class="col-count">{{ columns[stage] | length }}</span>
+    </header>
+    <div class="col-body" data-dropzone data-stage="{{ stage }}">
+      {% for listing in columns[stage] %}
+      <article class="listing" draggable="true" data-id="{{ listing.id }}" data-stage="{{ stage }}" data-mtime="{{ mtimes[listing.id] }}">
+        <div class="listing-co">{{ listing.company }}</div>
+        <div class="listing-ti">{{ listing.title }}</div>
+        {% if listing.url %}<a class="listing-link" href="{{ listing.url }}" target="_blank" rel="noopener">Posting ↗</a>{% endif %}
+        <div class="listing-foot">
+          <span class="days">{{ listing | days_in_stage(today) }} days</span>
+          {% if listing.referral.status != 'none' %}<span class="badge-referral">referral</span>{% endif %}
+        </div>
+      </article>
+      {% endfor %}
+      <p class="col-empty" {% if columns[stage] %}hidden{% endif %}>—</p>
+    </div>
+  </section>
+  {% endfor %}
+</div>
+
+<details class="archive-lane">
+  <summary>Archived <span class="col-count">{{ archived | length }}</span></summary>
+  <div class="archive-rows" data-dropzone data-stage="archived">
+    {% for listing in archived %}
+    <article class="listing is-archived" draggable="true" data-id="{{ listing.id }}" data-stage="archived" data-mtime="{{ mtimes[listing.id] }}">
+      <div class="listing-co">{{ listing.company }}</div>
+      <div class="listing-ti">{{ listing.title }}</div>
+      {% if listing.url %}<a class="listing-link" href="{{ listing.url }}" target="_blank" rel="noopener">Posting ↗</a>{% endif %}
+      {% if listing.history and listing.history[-1].note %}<p class="listing-note">{{ listing.history[-1].note }}</p>{% endif %}
+      <div class="listing-foot">
+        <span class="days">{{ listing | days_in_stage(today) }} days</span>
+        <span class="chip">reason: {{ listing.reason }}</span>
+      </div>
+    </article>
+    {% endfor %}
+    <p class="col-empty" {% if archived %}hidden{% endif %}>Nothing archived yet.</p>
+  </div>
+</details>
+
+<template id="reason-options">
+  {% for r in archive_reasons %}<option value="{{ r }}">{{ r }}</option>{% endfor %}
+</template>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='interview-board.js') }}"></script>
+{% endblock %}

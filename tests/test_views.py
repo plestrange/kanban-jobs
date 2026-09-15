@@ -1,19 +1,19 @@
 from datetime import date
 from pathlib import Path
 
-from src.models import Assessment, Card, Comp, Discovered, HistoryEntry, Location
-from src.store import load_cards, load_inbox
-from src.views import board, days_in_stage, queue
+from src.models import Assessment, Comp, Discovered, HistoryEntry, Listing, Location
+from src.store import load_interview_board, load_listings
+from src.views import days_in_stage, interview_board, queue
 
 FIXTURES = Path("tests/fixtures")
 
 
-def _cards():
-    return load_cards(root=FIXTURES)
+def _listings():
+    return load_interview_board(root=FIXTURES)
 
 
-def _card(id_, company, stage, occurred):
-    return Card(
+def _listing(id_, company, stage, occurred):
+    return Listing(
         id=id_,
         req_id=None,
         company=company,
@@ -31,29 +31,29 @@ def _card(id_, company, stage, occurred):
 
 
 def test_days_in_stage_reads_last_history_entry():
-    card = next(c for c in _cards() if c.id == "acme-sr-mlops")
-    assert days_in_stage(card, date(2026, 9, 4)) == 8  # entered technical 2026-08-27
+    listing = next(c for c in _listings() if c.id == "acme-sr-mlops")
+    assert days_in_stage(listing, date(2026, 9, 4)) == 8  # entered technical 2026-08-27
 
 
-def test_board_groups_by_stage():
-    columns = board(_cards(), today=date(2026, 9, 10))
+def test_interview_board_groups_by_stage():
+    columns = interview_board(_listings(), today=date(2026, 9, 10))
     assert [c.id for c in columns["technical"]] == ["acme-sr-mlops"]
     assert [c.id for c in columns["applied"]] == ["globex-mle"]
     assert [c.id for c in columns["archived"]] == ["initech-platform"]
     assert columns["offer"] == []
 
 
-def test_board_sorts_oldest_first_within_a_column():
-    cards = [
-        _card("newer", "Beta Co", "applied", date(2026, 9, 5)),
-        _card("older", "Alpha Co", "applied", date(2026, 8, 1)),
-        _card("tie-b", "Zeta Co", "applied", date(2026, 9, 1)),
-        _card("tie-a", "Alpha Co", "applied", date(2026, 9, 1)),
+def test_interview_board_sorts_oldest_first_within_a_column():
+    listings = [
+        _listing("newer", "Beta Co", "applied", date(2026, 9, 5)),
+        _listing("older", "Alpha Co", "applied", date(2026, 8, 1)),
+        _listing("tie-b", "Zeta Co", "applied", date(2026, 9, 1)),
+        _listing("tie-a", "Alpha Co", "applied", date(2026, 9, 1)),
     ]
-    columns = board(cards, today=date(2026, 9, 10))
+    columns = interview_board(listings, today=date(2026, 9, 10))
     assert [c.id for c in columns["applied"]] == ["older", "tie-a", "tie-b", "newer"]
 
 
 def test_queue_sorts_by_tier_then_comp():
-    ordered = queue(load_inbox(root=FIXTURES))
+    ordered = queue(load_listings(root=FIXTURES))
     assert [c.id for c in ordered] == ["umbrella-mlops", "hooli-ml-eng"]

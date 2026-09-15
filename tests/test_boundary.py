@@ -1,6 +1,6 @@
-"""The two-writer rule (docs/design/ARCHITECTURE.md §4, §9): discovery writes only inbox/,
-the app writes only cards/. This is a convention, not a mechanism (§12) — these
-tests are the mechanism that catches drift.
+"""The two-writer rule (docs/design/ARCHITECTURE.md §4, §9): a job search sweep writes only
+listings/, the app writes only interview-board/. This is a convention, not a mechanism
+(§12) — these tests are the mechanism that catches drift.
 """
 
 import hashlib
@@ -30,22 +30,22 @@ def _hash_tree(dir_path: Path) -> dict[str, str]:
 
 
 def test_reads_never_mutate_disk(root):
-    before_cards = _hash_tree(root / "cards")
-    before_inbox = _hash_tree(root / "inbox")
+    before_board = _hash_tree(root / "interview-board")
+    before_listings = _hash_tree(root / "listings")
 
-    store.load_cards(root=root)
-    store.load_inbox(root=root)
+    store.load_interview_board(root=root)
+    store.load_listings(root=root)
     store.load("acme-sr-mlops", root=root)
 
-    assert _hash_tree(root / "cards") == before_cards
-    assert _hash_tree(root / "inbox") == before_inbox
+    assert _hash_tree(root / "interview-board") == before_board
+    assert _hash_tree(root / "listings") == before_listings
 
 
-def test_simulated_discovery_sweep_never_touches_cards(root):
-    """A discovery session is a Claude session writing YAML files directly —
-    it never calls src.store at all. Simulate that and assert cards/ is inert.
+def test_simulated_search_sweep_never_touches_interview_board(root):
+    """A job search sweep is a Claude session writing YAML files directly —
+    it never calls src.store at all. Simulate that and assert interview-board/ is inert.
     """
-    before_cards = _hash_tree(root / "cards")
+    before_board = _hash_tree(root / "interview-board")
 
     new_candidate = {
         "id": "wonka-mle",
@@ -60,16 +60,16 @@ def test_simulated_discovery_sweep_never_touches_cards(root):
         "discovered": {"date": "2026-09-10", "via": "test sweep", "rubric": "v1"},
         "assessment": {"tier": "good", "why": "test", "gap": "test"},
     }
-    (root / "inbox" / "wonka-mle.yaml").write_text(yaml.safe_dump(new_candidate))
+    (root / "listings" / "wonka-mle.yaml").write_text(yaml.safe_dump(new_candidate))
 
-    assert _hash_tree(root / "cards") == before_cards
-    assert "wonka-mle.yaml" in _hash_tree(root / "inbox")
+    assert _hash_tree(root / "interview-board") == before_board
+    assert "wonka-mle.yaml" in _hash_tree(root / "listings")
 
 
-def test_review_is_the_only_seam_from_inbox_to_cards(root):
-    """review() is the one function that reads inbox/ and writes cards/. Confirm
-    it removes the inbox copy so no card ever exists in both places at once.
+def test_review_is_the_only_seam_from_listings_to_interview_board(root):
+    """review() is the one function that reads listings/ and writes interview-board/.
+    Confirm it removes the listings copy so no listing ever exists in both places at once.
     """
     store.review("hooli-ml-eng", interested=True, root=root)
-    assert not (root / "inbox" / "hooli-ml-eng.yaml").exists()
-    assert (root / "cards" / "hooli-ml-eng.yaml").exists()
+    assert not (root / "listings" / "hooli-ml-eng.yaml").exists()
+    assert (root / "interview-board" / "hooli-ml-eng.yaml").exists()

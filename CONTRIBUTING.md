@@ -51,12 +51,12 @@ All four run in CI on every PR (`.github/workflows/ci.yml`), against Python
 - Keep changes small and single-purpose. This isn't a CRM and isn't trying to
   become one — see `docs/design/ARCHITECTURE.md` §1 for the stated non-goals before
   adding a field, a flag, or a view.
-- New behavior needs a test. `tests/fixtures/` has invented cards at
+- New behavior needs a test. `tests/fixtures/` has invented listings at
   fictional companies for exactly this — never add a real listing there.
 - If a change touches the data model, the stage machine, or the two-writer
-  rule between Discovery and the board, update `docs/design/ARCHITECTURE.md`
-  alongside the code. That document is the design record, not just a
-  description of what happened to get built.
+  rule between Job Listings and the Interview Board, update
+  `docs/design/ARCHITECTURE.md` alongside the code. That document is the
+  design record, not just a description of what happened to get built.
 - User-visible changes get a line in `CHANGELOG.md` under `Unreleased`.
 
 ## Commit messages

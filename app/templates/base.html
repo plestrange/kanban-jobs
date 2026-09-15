@@ -9,8 +9,8 @@
 <body>
 <nav class="nav">
   <span class="nav-brand">Kanban Jobs</span>
-  <a class="nav-tab{{ ' active' if active == 'discovery' else '' }}" href="{{ url_for('discovery') }}">Discovery</a>
-  <a class="nav-tab{{ ' active' if active == 'board' else '' }}" href="{{ url_for('board') }}">Board</a>
+  <a class="nav-tab{{ ' active' if active == 'listings' else '' }}" href="{{ url_for('listings') }}">Job Listings</a>
+  <a class="nav-tab{{ ' active' if active == 'interview-board' else '' }}" href="{{ url_for('interview_board') }}">Interview Board</a>
 </nav>
 <main id="main">
 {% block content %}{% endblock %}

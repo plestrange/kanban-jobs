@@ -7,6 +7,7 @@ you're doing about them.
 ```{toctree}
 :maxdepth: 2
 
+concepts
 FIND-JOBS
 design/ARCHITECTURE
 ```

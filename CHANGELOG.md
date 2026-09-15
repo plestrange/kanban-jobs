@@ -50,6 +50,14 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `ARCHITECTURE.md` moved to `docs/design/`, separating the design record
   (decisions, rejected alternatives, reasoning) from user-facing docs, which
   are being rewritten as a streamlined guide.
+- Renamed the two views and their data folders for clarity: Discovery is now
+  **Job Listings** (`data/listings/`, was `data/inbox/`) and Board is now
+  the **Interview Board** (`data/interview-board/`, was `data/cards/`). The
+  `Card` model, routes, templates, and static assets were renamed to match
+  (`Card` → `Listing`, `/board` → `/interview-board`, `/discovery` →
+  `/listings`, etc). The `/find-jobs` skill and procedure name are unchanged;
+  the search process itself is now called a "job search sweep" rather than
+  "discovery" throughout the docs.
 
 ## 0.1.0
 
