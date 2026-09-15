@@ -31,6 +31,10 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Changed
 
+- `hooks/pre-commit` now runs `make lint`, `make typecheck`, and `make test`
+  after the existing `data/` guard, so a broken commit is caught locally
+  instead of only in CI. `make init` re-installs the hook, so existing
+  checkouts pick this up the next time they run it.
 - `DISCOVERY.md` renamed to `FIND-JOBS.md` — a more descriptive name for
   the procedure it documents.
 - Project renamed from Job Pipeline to Kanban Jobs, ahead of publishing.

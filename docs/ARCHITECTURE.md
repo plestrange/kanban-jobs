@@ -782,9 +782,11 @@ config/criteria.yaml
 ```
 
 **Pre-commit hook** — rejects any commit that stages a path under `data/` or
-`config/criteria.yaml`, with a message saying why. Twenty lines. It also catches
-the case where someone (you, in six months, in a hurry) drops a real card into
-`tests/fixtures/`.
+`config/criteria.yaml`, with a message saying why, via `make check-staged`. It
+also catches the case where someone (you, in six months, in a hurry) drops a
+real card into `tests/fixtures/`. That guard runs first and is not
+skippable; the hook then also runs `make lint`, `make typecheck`, and `make
+test`, so a broken commit is caught locally rather than in CI.
 
 **`make init` installs the hook**, and fails if it can't. A hook that exists only
 in the README isn't a mechanism, and hooks don't survive a fresh clone — so the

@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
-# Delegates to `make check-staged` — see docs/ARCHITECTURE.md §9.
+# Delegates to Makefile targets — see docs/ARCHITECTURE.md §9 and CONTRIBUTING.md.
+# check-staged first: the data/ guard is the one check that must never be skipped.
 set -euo pipefail
-exec make check-staged
+make check-staged
+make lint
+make typecheck
+make test

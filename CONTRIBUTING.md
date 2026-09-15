@@ -23,9 +23,14 @@ that's what CI installs from too, so what passes locally is what runs there.
 Changed a dependency in `pyproject.toml`? Run `uv lock` and commit the
 updated `uv.lock` alongside it.
 
-The pre-commit hook exists to stop `data/` (personal search data) from ever
-being committed — see `docs/ARCHITECTURE.md` §9. Keep it installed even
-though you're working on the tool, not the data.
+The pre-commit hook's first and most important job is stopping `data/`
+(personal search data) from ever being committed — see `docs/ARCHITECTURE.md`
+§9. It also runs `lint`, `typecheck`, and `test`, in that order, so a commit
+that fails any of them is refused up front rather than caught later in CI.
+Keep it installed even though you're working on the tool, not the data.
+
+Expect commits to take a few seconds longer because of this — that's the
+tradeoff for not finding out about a broken test only when CI runs.
 
 ## Before opening a PR
 
@@ -36,6 +41,8 @@ make test         # pytest + the data/ tracking check
 make docs         # confirm the Sphinx build isn't broken
 ```
 
+The pre-commit hook already runs the first three on every commit; `make docs`
+is the one check it doesn't cover, so run it yourself before opening a PR.
 All four run in CI on every PR (`.github/workflows/ci.yml`), against Python
 3.11 and 3.12. A PR that doesn't pass them won't merge.
 
