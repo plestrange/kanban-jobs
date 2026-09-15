@@ -1,7 +1,7 @@
 <!--
 Copied to data/profile.md by `make init`. Edit the copy, not this file — this
 one ships in git as a template with no personal information; yours is
-gitignored (see docs/ARCHITECTURE.md §2 and §9).
+gitignored (see docs/design/ARCHITECTURE.md §2 and §9).
 
 This is what a discovery session assesses every listing against: the `why`
 and `gap` lines on each card come from comparing the posting to what's

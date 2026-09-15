@@ -1,5 +1,5 @@
 # Copied to data/criteria.yaml by `make init`. Edit the copy, not this file —
-# this one ships in git as the schema; yours is gitignored (ARCHITECTURE.md §9).
+# this one ships in git as the schema; yours is gitignored (docs/design/ARCHITECTURE.md §9).
 
 version: v1
 

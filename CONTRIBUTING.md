@@ -1,7 +1,7 @@
 # Contributing
 
 Thanks for looking at this. It's a small, deliberately minimal tool — read
-`docs/ARCHITECTURE.md` before proposing anything structural. Most design
+`docs/design/ARCHITECTURE.md` before proposing anything structural. Most design
 questions ("why isn't there a CLI", "why flat files instead of SQLite", "why
 no staleness flags") are already answered there, with the reasoning.
 
@@ -24,7 +24,7 @@ Changed a dependency in `pyproject.toml`? Run `uv lock` and commit the
 updated `uv.lock` alongside it.
 
 The pre-commit hook's first and most important job is stopping `data/`
-(personal search data) from ever being committed — see `docs/ARCHITECTURE.md`
+(personal search data) from ever being committed — see `docs/design/ARCHITECTURE.md`
 §9. It also runs `lint`, `typecheck`, and `test`, in that order, so a commit
 that fails any of them is refused up front rather than caught later in CI.
 Keep it installed even though you're working on the tool, not the data.
@@ -49,12 +49,12 @@ All four run in CI on every PR (`.github/workflows/ci.yml`), against Python
 ## Scope
 
 - Keep changes small and single-purpose. This isn't a CRM and isn't trying to
-  become one — see `docs/ARCHITECTURE.md` §1 for the stated non-goals before
+  become one — see `docs/design/ARCHITECTURE.md` §1 for the stated non-goals before
   adding a field, a flag, or a view.
 - New behavior needs a test. `tests/fixtures/` has invented cards at
   fictional companies for exactly this — never add a real listing there.
 - If a change touches the data model, the stage machine, or the two-writer
-  rule between Discovery and the board, update `docs/ARCHITECTURE.md`
+  rule between Discovery and the board, update `docs/design/ARCHITECTURE.md`
   alongside the code. That document is the design record, not just a
   description of what happened to get built.
 - User-visible changes get a line in `CHANGELOG.md` under `Unreleased`.

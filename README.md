@@ -2,7 +2,7 @@
 
 A tool for running a job search: a Claude-driven discovery procedure that
 screens listings against your criteria, and a browser board for tracking what
-you're doing about them. See `docs/ARCHITECTURE.md` for the full design and
+you're doing about them. See `docs/design/ARCHITECTURE.md` for the full design and
 `docs/FIND-JOBS.md` for the discovery procedure itself.
 
 The tool lives here, in git. Your data — criteria, candidates, notes — lives
@@ -24,7 +24,7 @@ the gitignored `data/` directory — fill both in before your first sweep:
 
 - **`data/criteria.yaml`** — titles, level, location rules, exclusions, the
   companies you want watched directly. Comments in the file explain each
-  field; see `docs/ARCHITECTURE.md` §5.4 for the full reasoning.
+  field; see `docs/design/ARCHITECTURE.md` §5.4 for the full reasoning.
 - **`data/profile.md`** — your background, written for a discovery session
   to assess listings against. Section headers guide you through what to
   include; the more specific, the sharper the `why`/`gap` lines on every
@@ -89,7 +89,7 @@ change without fighting the design:
   will fail validation, so update any cards in `data/cards/` to match.
 - **Archive reasons** — `ARCHIVE_REASONS` in `src/models.py`, same idea.
 
-What's load-bearing and worth reading `docs/ARCHITECTURE.md` before touching:
+What's load-bearing and worth reading `docs/design/ARCHITECTURE.md` before touching:
 the two-writer rule between Discovery and the board (§4), the card schema
 (§5.2), and the stated non-goals (§1) — most requests to add a field or a
 flag are answered there already.
@@ -98,7 +98,7 @@ flag are answered there already.
 
 M1–M5 are in place: the core library, the Discovery review queue, the
 drag-and-drop board with mtime conflict handling, and card detail (notes,
-contacts, referral, an editable history timeline). Per `docs/ARCHITECTURE.md`
+contacts, referral, an editable history timeline). Per `docs/design/ARCHITECTURE.md`
 §11, M5 is the last milestone — the tool is finished, not paused.
 
 ## Contributing

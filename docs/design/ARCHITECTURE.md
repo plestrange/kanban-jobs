@@ -670,8 +670,9 @@ kanban-jobs/
   docs/
     conf.py                     # Sphinx config; myst-parser renders these .md files directly
     index.md
-    ARCHITECTURE.md
     FIND-JOBS.md                 # the procedure a search session follows
+    design/
+      ARCHITECTURE.md            # this document
   hooks/
     pre-commit                  # installed by `make init`; delegates to `make check-staged`
   config/

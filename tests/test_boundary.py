@@ -1,4 +1,4 @@
-"""The two-writer rule (docs/ARCHITECTURE.md §4, §9): discovery writes only inbox/,
+"""The two-writer rule (docs/design/ARCHITECTURE.md §4, §9): discovery writes only inbox/,
 the app writes only cards/. This is a convention, not a mechanism (§12) — these
 tests are the mechanism that catches drift.
 """

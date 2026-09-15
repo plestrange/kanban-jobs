@@ -22,7 +22,7 @@ test:
 	pytest
 	$(MAKE) check-clean
 
-# Tracked paths that must stay gitignored — see docs/ARCHITECTURE.md §9.
+# Tracked paths that must stay gitignored — see docs/design/ARCHITECTURE.md §9.
 check-clean:
 	@bad=$$(git ls-files | grep -E '$(DATA_PATTERN)' || true); \
 	if [ -n "$$bad" ]; then \
@@ -38,7 +38,7 @@ check-staged:
 	if [ -n "$$bad" ]; then \
 		echo "Refusing commit — staged path(s) under data/ or config/criteria.yaml:" >&2; \
 		echo "$$bad" >&2; \
-		echo "This data must never enter git history. See docs/ARCHITECTURE.md §9." >&2; \
+		echo "This data must never enter git history. See docs/design/ARCHITECTURE.md §9." >&2; \
 		exit 1; \
 	fi
 

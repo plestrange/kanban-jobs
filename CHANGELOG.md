@@ -47,10 +47,13 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `hooks/pre-commit` and `scripts/check-clean.sh` folded into Makefile
   targets (`check-clean`, `check-staged`) sharing one pattern, instead of
   two scripts that could drift apart.
+- `ARCHITECTURE.md` moved to `docs/design/`, separating the design record
+  (decisions, rejected alternatives, reasoning) from user-facing docs, which
+  are being rewritten as a streamlined guide.
 
 ## 0.1.0
 
-The tool as built through milestones M1–M5 (see `docs/ARCHITECTURE.md` §11):
+The tool as built through milestones M1–M5 (see `docs/design/ARCHITECTURE.md` §11):
 
 ### Added
 

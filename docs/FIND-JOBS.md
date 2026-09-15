@@ -42,7 +42,7 @@ to prevent.
 | `data/cards/*.yaml` | Already-decided listings — including passed ones |
 
 All paths are relative to the repo root. There is no environment variable to
-resolve and no configured location — see ARCHITECTURE.md §2.
+resolve and no configured location — see design/ARCHITECTURE.md §2.
 
 Read all four before searching. Skipping the last two is how a run hands the user
 twenty roles they already rejected.
@@ -218,7 +218,7 @@ Then write the assessment against `profile.md`:
 ## Phase 6 — Write
 
 **New candidates** → one `inbox/<id>.yaml` per survivor, schema per
-ARCHITECTURE.md §5.2. Fill the discovery zone completely; leave the pipeline zone
+design/ARCHITECTURE.md §5.2. Fill the discovery zone completely; leave the pipeline zone
 out entirely — the app writes it at review.
 
 Always set `discovered.via` to the source that surfaced it. After a few sweeps
