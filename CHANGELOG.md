@@ -7,6 +7,10 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
+- `.claude/skills/find-jobs/` — a project skill so a discovery sweep can be
+  run with `/find-jobs` instead of typing out the full prompt. It's a thin
+  pointer at `docs/FIND-JOBS.md`, which stays the single source of truth for
+  the procedure.
 - `config/profile.example.md` — a template for `data/profile.md`, copied by
   `make init` the same way `criteria.example.yaml` already was. Closes the
   gap where a new user had to dig through `ARCHITECTURE.md` to learn what

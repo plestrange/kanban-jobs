@@ -44,9 +44,15 @@ it finds in the Discovery tab.
 Discovery isn't a script — it's a Claude session working through
 `docs/FIND-JOBS.md`, using `data/criteria.yaml` and `data/profile.md` as
 inputs. Open a Claude Code session with this repo as the working directory
-and ask it to run one, e.g.:
+and run:
 
-> Run a discovery sweep per docs/FIND-JOBS.md.
+```
+/find-jobs
+```
+
+(a project skill at `.claude/skills/find-jobs/`, which just points at
+`docs/FIND-JOBS.md`) — or ask in plain language, e.g. "run a discovery sweep
+per docs/FIND-JOBS.md."
 
 It reads your criteria and profile, searches, screens, and writes results to
 `data/inbox/`. Nothing is added to `data/cards/` — reviewing what landed in
