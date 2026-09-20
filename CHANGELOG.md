@@ -21,7 +21,7 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   profile, board stages, archive reasons) versus what's load-bearing.
 - `CONTRIBUTING.md` and this changelog.
 - CI (GitHub Actions): lint, typecheck, test, and docs build on every PR,
-  against Python 3.11 and 3.12.
+  against Python 3.12 and 3.13.
 - `LICENSE` (MIT).
 - Sphinx documentation (`make docs`, `make docs-serve`), with `myst-parser`
   rendering `docs/ARCHITECTURE.md` and `docs/FIND-JOBS.md` directly.
@@ -58,6 +58,18 @@ follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   `/listings`, etc). The `/find-jobs` skill and procedure name are unchanged;
   the search process itself is now called a "job search sweep" rather than
   "discovery" throughout the docs.
+- Minimum Python is now 3.12 (`requires-python = ">=3.12"`, with `ruff` and
+  `mypy` targeting `py312`); CI runs against 3.12 and 3.13.
+- Relaxed the `>=` floors on dependencies to the oldest versions that
+  actually work on 3.12 — they exist to document a real minimum, not to pull
+  everyone onto the newest release, and `uv.lock` is what pins the exact
+  versions used by local dev and CI either way.
+
+### Fixed
+
+- `docs/concepts.md` linked to a `guide.md` that doesn't exist (the user-facing
+  guide rewrite hasn't landed); it now points at `FIND-JOBS.md`, so the Sphinx
+  build is warning-free again.
 
 ## 0.1.0
 

@@ -35,8 +35,8 @@ grouped into columns by stage, showing how long each has sat where it is.
 Reviewing a candidate in the Job Listings queue moves it into the board either into
 one of the columns or into the Archive for future reference.
 
-See [Running a job search sweep](guide.md#running-a-job-search-sweep) and
-[The Job Listings queue](guide.md#the-job-listings-queue).
+See the [job search procedure](FIND-JOBS.md) for how a sweep finds and
+screens the candidates that land in the queue.
 
 ## The tool, and your data
 
