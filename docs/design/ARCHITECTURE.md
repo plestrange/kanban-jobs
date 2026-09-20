@@ -717,7 +717,7 @@ The `Makefile` is the entry point for everything: `make init` (§6.4), `make dev
 `make test`, `make check-clean` / `make check-staged` (§9), `make lint`, `make
 typecheck`, and `make docs`. No `cli.py`, no `[project.scripts]` — see §6.4.
 
-**Stack:** Python 3.11+, `pyyaml`, `jinja2`, `flask`, `pytest`, `ruff`, `mypy`,
+**Stack:** Python 3.12+, `pyyaml`, `jinja2`, `flask`, `pytest`, `ruff`, `mypy`,
 `sphinx` + `myst-parser` + `furo`. No frontend build step — plain JS and CSS
 served as static files. `make dev` starts it.
 

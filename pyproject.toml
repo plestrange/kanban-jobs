@@ -1,25 +1,25 @@
 [project]
 name = "kanban-jobs"
-version = "0.1.0"
+version = "0.2.0"
 description = "Core library and browser app for tracking a job search pipeline."
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = "MIT"
 dependencies = [
-    "pyyaml>=6.0",
+    "pyyaml>=6.0.1",
     "flask>=3.0",
     "jinja2>=3.1",
 ]
 
 [dependency-groups]
 dev = [
-    "pytest>=8.0",
-    "ruff>=0.16",
-    "mypy>=1.19",
+    "pytest>=7.4",
+    "ruff>=0.5",
+    "mypy>=1.8",
     "types-PyYAML",
-    "sphinx>=7.4",
-    "myst-parser>=3.0",
-    "furo>=2025.12",
-    "sphinx-autobuild>=2024.10",
+    "sphinx>=7.2",
+    "myst-parser>=2.0",
+    "furo>=2024.1.29",
+    "sphinx-autobuild>=2024.2.4",
 ]
 
 [tool.uv]
@@ -31,13 +31,13 @@ pythonpath = ["."]
 
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 packages = ["src", "app"]
 ignore_missing_imports = true
 disallow_untyped_defs = false

@@ -7,7 +7,7 @@ no staleness flags") are already answered there, with the reasoning.
 
 ## Setup
 
-Requires Python 3.11+ and [uv](https://docs.astral.sh/uv/) — uv will fetch a
+Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/) — uv will fetch a
 matching interpreter itself if you don't already have one.
 
 ```
@@ -44,7 +44,7 @@ make docs         # confirm the Sphinx build isn't broken
 The pre-commit hook already runs the first three on every commit; `make docs`
 is the one check it doesn't cover, so run it yourself before opening a PR.
 All four run in CI on every PR (`.github/workflows/ci.yml`), against Python
-3.11 and 3.12. A PR that doesn't pass them won't merge.
+3.12 and 3.13. A PR that doesn't pass them won't merge.
 
 ## Scope
 
