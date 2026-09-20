@@ -1,6 +1,6 @@
 [project]
 name = "kanban-jobs"
-version = "0.1.0"
+version = "0.2.0"
 description = "Core library and browser app for tracking a job search pipeline."
 requires-python = ">=3.12"
 license = "MIT"
