@@ -12,6 +12,7 @@ level: {min: senior, target: lead}
 location:
   accept: [remote-us, seattle-hybrid]
   reject: [onsite-only, relocation, state-restricted-remote, non-pacific-hours]
+  max_office_days_per_week: 3   # hybrid roles requiring more days fail location
 
 exclusions:
   - {id: employer, values: []}

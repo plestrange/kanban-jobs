@@ -178,6 +178,9 @@ In order:
    Seattle-based user cannot take a role restricted to California residents, no
    matter how good the fit — record it with `eligible: false` and `tier: out`
    rather than discarding it, so the next sweep doesn't rediscover it.
+   Hybrid roles requiring more in-office days than
+   `location.max_office_days_per_week` fail the same way. If the posting
+   doesn't say how many days, don't guess — keep it and name the unknown in `gap`.
 4. **Level.** Below the criteria's `level.min` fails.
 5. **Reach content.** Per the rubric's `drop` rule, roles whose core technical
    content is a genuine stretch get dropped, not ranked. Be honest; a generous
