@@ -101,6 +101,19 @@ never re-surfaces a listing once it's archived, whatever the reason. Nothing
 is ever deleted — `interview-board/archived` is the full record of
 everything you've decided about, not a trash can.
 
+### Marking a round done
+
+A stage tells you which round you've reached, not whether you've done it yet.
+Cards in `informational`, `technical`, `take-home` and `panel` have a
+**Mark done** button for when you've finished the round and are waiting to hear
+back. The card stays in its column, shows **✓ done**, and its day count restarts
+from when you finished. Done cards sit at the bottom of their column, below the
+rounds still ahead of you.
+
+Clicking **✓ done** undoes it. Moving the card to another stage clears it. If
+you're logging it late, fix the date on the listing's history, the same as for
+any stage move.
+
 ## Time is shown, not judged
 
 Every listing shows `days_in_stage` — how long it's sat where it is, computed

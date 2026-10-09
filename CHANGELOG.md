@@ -3,6 +3,16 @@
 All notable changes to this project are documented here. Format loosely
 follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## Unreleased
+
+### Added
+
+- Mark a round done. Cards in `informational`, `technical`, `take-home` and
+  `panel` have a **Mark done** toggle for when you've finished a round but
+  haven't moved on yet. It records a `completed: true` history entry, restarts
+  the day count from when you finished, and sorts the card below the
+  unfinished ones in its column. Clicking **✓ done** again undoes it.
+
 ## 0.2.0
 
 ### Added

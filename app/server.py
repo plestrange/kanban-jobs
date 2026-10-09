@@ -7,7 +7,7 @@ from flask import Flask, abort, jsonify, redirect, render_template, request, url
 
 from src import pipeline, store, views
 from src.config import DATA_DIR
-from src.models import ARCHIVE_REASONS, STAGES, Contact, Listing, Referral
+from src.models import ARCHIVE_REASONS, ROUND_STAGES, STAGES, Contact, Listing, Referral
 
 BOARD_STAGES = [s for s in STAGES if s != "archived"]
 REFERRAL_STATUSES = ["none", "possible", "requested", "submitted"]
@@ -41,7 +41,10 @@ def _listing_json(listing: Listing, mtime: float | None = None) -> dict:
         "stage": listing.stage,
         "reason": listing.reason,
         "note": listing.history[-1].note if listing.history else "",
+        "round_done": pipeline.round_done(listing),
     }
+    if listing.history:
+        data["days"] = views.days_in_stage(listing, date.today())
     if mtime is not None:
         data["mtime"] = mtime
     return data
@@ -68,6 +71,7 @@ def _listing_detail_json(listing: Listing, mtime: float) -> dict:
                 "recorded": h.recorded.isoformat(),
                 "to": h.to,
                 "note": h.note,
+                "completed": h.completed,
             }
             for i, h in enumerate(listing.history)
         ],
@@ -80,6 +84,7 @@ def create_app(root: Path = DATA_DIR) -> Flask:
     app.config["DATA_ROOT"] = root
     app.jinja_env.filters["comp_text"] = _comp_text
     app.jinja_env.filters["days_in_stage"] = views.days_in_stage
+    app.jinja_env.tests["round_done"] = pipeline.round_done
 
     def data_root() -> Path:
         return app.config["DATA_ROOT"]
@@ -103,6 +108,7 @@ def create_app(root: Path = DATA_DIR) -> Flask:
             today=date.today(),
             mtimes=mtimes,
             archive_reasons=ARCHIVE_REASONS,
+            round_stages=ROUND_STAGES,
         )
 
     @app.get("/interview-board/<listing_id>")
@@ -171,6 +177,42 @@ def create_app(root: Path = DATA_DIR) -> Flask:
 
         try:
             pipeline.move(listing, to_stage, reason=reason, note=note, occurred=occurred)
+        except ValueError as e:
+            return jsonify({"error": str(e)}), 400
+
+        try:
+            new_mtime = store.save(listing, payload.get("mtime"), root=data_root())
+        except store.ConflictError:
+            current = store.load(listing_id, root=data_root())
+            current_mtime = store.mtime(listing_id, root=data_root())
+            return jsonify(
+                {"error": "conflict", "listing": _listing_json(current, current_mtime)}
+            ), 409
+
+        return jsonify(_listing_json(listing, new_mtime))
+
+    @app.route("/api/interview-board/<listing_id>/complete", methods=["POST", "DELETE"])
+    def api_complete_round(listing_id):
+        """POST marks the current round done; DELETE undoes it."""
+        payload = request.get_json(silent=True) or {}
+
+        occurred_raw = payload.get("occurred")
+        try:
+            occurred = date.fromisoformat(occurred_raw) if occurred_raw else None
+        except ValueError:
+            abort(400)
+
+        try:
+            listing = store.load(listing_id, root=data_root())
+        except FileNotFoundError:
+            abort(404)
+
+        try:
+            if request.method == "POST":
+                note = (payload.get("note") or "").strip()
+                pipeline.complete(listing, note=note, occurred=occurred)
+            else:
+                pipeline.uncomplete(listing)
         except ValueError as e:
             return jsonify({"error": str(e)}), 400
 

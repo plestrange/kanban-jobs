@@ -273,3 +273,41 @@ def test_amend_history_conflict_on_stale_mtime(client):
         json={"occurred": "2026-08-13", "mtime": 1.0},
     )
     assert res.status_code == 409
+
+
+def test_complete_round_and_undo(client):
+    mtime = _mtime(client, "acme-sr-mlops")
+    res = client.post("/api/interview-board/acme-sr-mlops/complete", json={"mtime": mtime})
+    assert res.status_code == 200
+    data = res.get_json()
+    assert data["stage"] == "technical"
+    assert data["round_done"] is True
+    assert data["days"] == 0
+
+    body = client.get("/interview-board").get_data(as_text=True)
+    assert "✓ done" in body
+
+    res = client.delete(
+        "/api/interview-board/acme-sr-mlops/complete", json={"mtime": data["mtime"]}
+    )
+    assert res.status_code == 200
+    data = res.get_json()
+    assert data["round_done"] is False
+    assert data["days"] > 0
+
+
+def test_complete_round_rejects_non_round_stage(client):
+    mtime = _mtime(client, "globex-mle")  # stage: applied
+    res = client.post("/api/interview-board/globex-mle/complete", json={"mtime": mtime})
+    assert res.status_code == 400
+
+
+def test_undo_round_rejects_when_not_done(client):
+    mtime = _mtime(client, "acme-sr-mlops")
+    res = client.delete("/api/interview-board/acme-sr-mlops/complete", json={"mtime": mtime})
+    assert res.status_code == 400
+
+
+def test_complete_round_conflict_on_stale_mtime(client):
+    res = client.post("/api/interview-board/acme-sr-mlops/complete", json={"mtime": 1.0})
+    assert res.status_code == 409

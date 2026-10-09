@@ -52,6 +52,20 @@ def test_save_is_atomic_and_roundtrips(root):
     assert not list(path.parent.glob("*.tmp"))  # no leftover temp file
 
 
+def test_completed_roundtrips_and_is_omitted_when_false(root):
+    from src.pipeline import complete
+
+    listing = store.load("acme-sr-mlops", root=root)
+    path = root / "interview-board" / "acme-sr-mlops.yaml"
+    complete(listing)
+    store.save(listing, path.stat().st_mtime, root=root)
+
+    reloaded = store.load("acme-sr-mlops", root=root)
+    assert reloaded.history[-1].completed
+    assert not reloaded.history[-2].completed
+    assert path.read_text().count("completed") == 1
+
+
 def test_save_raises_conflict_on_stale_mtime(root):
     listing = store.load("acme-sr-mlops", root=root)
     path = root / "interview-board" / "acme-sr-mlops.yaml"

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import date
 
-from .models import HistoryEntry, Listing
+from .models import ROUND_STAGES, HistoryEntry, Listing
 
 
 def move(
@@ -26,6 +26,43 @@ def move(
     )
     listing.stage = to_stage
     listing.reason = reason if to_stage == "archived" else None
+    return listing
+
+
+def round_done(listing: Listing) -> bool:
+    """Whether the round in the current stage is finished — derived from `history[-1]`."""
+    return bool(listing.history) and listing.history[-1].completed
+
+
+def complete(listing: Listing, note: str = "", occurred: date | None = None) -> Listing:
+    """Mark the current round done. Appends a `completed` entry; `stage` doesn't change.
+
+    The new entry becomes `history[-1]`, so `days_in_stage` counts from when the round
+    finished. The next `move()` appends an ordinary entry, which clears it.
+    """
+    if listing.stage not in ROUND_STAGES:
+        raise ValueError(f"{listing.stage!r} isn't an interview round")
+    if round_done(listing):
+        raise ValueError("round is already marked done")
+    recorded = date.today()
+    occurred = occurred or recorded
+    if occurred > recorded:
+        raise ValueError("occurred cannot be later than recorded — backdate, don't forward-date")
+
+    listing.history.append(
+        HistoryEntry(
+            occurred=occurred, recorded=recorded, to=listing.stage, note=note, completed=True
+        )
+    )
+    return listing
+
+
+def uncomplete(listing: Listing) -> Listing:
+    """Undo `complete()`. Only the latest entry can be undone — history is otherwise
+    never removed, just amended."""
+    if not round_done(listing):
+        raise ValueError("round isn't marked done")
+    listing.history.pop()
     return listing
 
 

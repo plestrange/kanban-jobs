@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from src.pipeline import amend, move
+from src.pipeline import amend, complete, move, round_done, uncomplete
 from src.store import load_interview_board
 
 FIXTURES = Path("tests/fixtures")
@@ -60,3 +60,57 @@ def test_amend_rejects_occurred_after_recorded():
     idx = len(listing.history) - 1
     with pytest.raises(ValueError):
         amend(listing, idx, occurred=date(2999, 1, 1))
+
+
+def test_complete_marks_round_done_without_changing_stage():
+    listing = _acme()
+    n = len(listing.history)
+    complete(listing, note="onsite", occurred=date(2026, 9, 2))
+    assert listing.stage == "technical"
+    assert round_done(listing)
+    assert len(listing.history) == n + 1
+    assert listing.history[-1].to == "technical"
+    assert listing.history[-1].completed
+    assert listing.history[-1].occurred == date(2026, 9, 2)
+
+
+def test_move_after_complete_clears_done():
+    listing = _acme()
+    complete(listing)
+    move(listing, "panel")
+    assert not round_done(listing)
+
+
+def test_complete_rejects_non_round_stage():
+    listing = _acme()
+    move(listing, "applied")
+    with pytest.raises(ValueError):
+        complete(listing)
+
+
+def test_complete_rejects_already_done():
+    listing = _acme()
+    complete(listing)
+    with pytest.raises(ValueError):
+        complete(listing)
+
+
+def test_complete_rejects_future_occurred():
+    listing = _acme()
+    with pytest.raises(ValueError):
+        complete(listing, occurred=date(2999, 1, 1))
+
+
+def test_uncomplete_removes_the_completed_entry():
+    listing = _acme()
+    before = list(listing.history)
+    complete(listing)
+    uncomplete(listing)
+    assert listing.history == before
+    assert not round_done(listing)
+
+
+def test_uncomplete_rejects_when_not_done():
+    listing = _acme()
+    with pytest.raises(ValueError):
+        uncomplete(listing)

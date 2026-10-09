@@ -1,5 +1,7 @@
 (function () {
   var reasonOptions = document.getElementById("reason-options");
+  var board = document.querySelector(".board");
+  var roundStages = board ? board.dataset.roundStages.split(" ") : [];
   var dragListing = null;
 
   function dropzones() {
@@ -28,6 +30,46 @@
     if (!zone) return;
     updateCount(stage);
     updateEmptyMarker(zone);
+  }
+
+  // Done rounds sit below unfinished ones; each group is oldest first (views.interview_board).
+  function sortKey(listing) {
+    return [listing.classList.contains("is-done") ? 1 : 0, -parseInt(listing.dataset.days || "0", 10)];
+  }
+
+  function placeListing(zone, listing) {
+    var key = sortKey(listing);
+    var cards = zone.querySelectorAll(".listing");
+    for (var i = 0; i < cards.length; i++) {
+      if (cards[i] === listing) continue;
+      var other = sortKey(cards[i]);
+      if (key[0] < other[0] || (key[0] === other[0] && key[1] < other[1])) {
+        zone.insertBefore(listing, cards[i]);
+        return;
+      }
+    }
+    var empty = zone.querySelector(".col-empty");
+    if (empty) zone.insertBefore(listing, empty);
+    else zone.appendChild(listing);
+  }
+
+  function setRoundState(listing, done, days) {
+    listing.classList.toggle("is-done", done);
+    if (days !== undefined) {
+      listing.dataset.days = days;
+      var daysEl = listing.querySelector(".days");
+      if (daysEl) daysEl.textContent = days + " days";
+    }
+    var btn = listing.querySelector(".round-toggle");
+    if (!btn) {
+      btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "round-toggle";
+      listing.querySelector(".listing-foot").appendChild(btn);
+    }
+    btn.hidden = roundStages.indexOf(listing.dataset.stage) === -1;
+    btn.textContent = done ? "\u2713 done" : "Mark done";
+    btn.title = done ? "Undo \u2014 round not done" : "Mark this round done";
   }
 
   function clearDragOver() {
@@ -177,9 +219,13 @@
     var originalStage = listing.dataset.stage;
     var originalMtime = listing.dataset.mtime;
 
-    zone.appendChild(listing);
+    var originalDone = listing.classList.contains("is-done");
+    var originalDays = listing.dataset.days;
+
     listing.dataset.stage = targetStage;
     listing.classList.toggle("is-archived", targetStage === "archived");
+    setRoundState(listing, false, 0);
+    placeListing(zone, listing);
     listing.classList.add("is-moving");
     refreshZone(originalStage);
     refreshZone(targetStage);
@@ -199,12 +245,14 @@
       .then(function (data) {
         listing.classList.remove("is-moving");
         listing.dataset.mtime = data.mtime;
+        setRoundState(listing, data.round_done, data.days);
         syncArchiveDisplay(listing, data);
       })
       .catch(function () {
         listing.classList.remove("is-moving");
         listing.dataset.stage = originalStage;
         listing.classList.toggle("is-archived", originalStage === "archived");
+        setRoundState(listing, originalDone, originalDays);
         originalParent.insertBefore(listing, originalNext);
         refreshZone(originalStage);
         refreshZone(targetStage);
@@ -213,7 +261,51 @@
       });
   }
 
+  function toggleRound(listing) {
+    if (listing.classList.contains("is-moving")) return;
+    var zone = listing.parentNode;
+    var originalNext = listing.nextSibling;
+    var originalDone = listing.classList.contains("is-done");
+    var originalDays = listing.dataset.days;
+
+    // Optimistic for marking done (the clock restarts at 0); undo waits for the
+    // server, since only it knows how long the listing has been in the stage.
+    if (!originalDone) {
+      setRoundState(listing, true, 0);
+      placeListing(zone, listing);
+    }
+    listing.classList.add("is-moving");
+
+    fetch("/api/interview-board/" + encodeURIComponent(listing.dataset.id) + "/complete", {
+      method: originalDone ? "DELETE" : "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ mtime: parseFloat(listing.dataset.mtime) }),
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error("toggle failed");
+        return res.json();
+      })
+      .then(function (data) {
+        listing.classList.remove("is-moving");
+        listing.dataset.mtime = data.mtime;
+        setRoundState(listing, data.round_done, data.days);
+        placeListing(zone, listing);
+      })
+      .catch(function () {
+        listing.classList.remove("is-moving");
+        setRoundState(listing, originalDone, originalDays);
+        zone.insertBefore(listing, originalNext);
+        listing.classList.add("drop-error");
+        setTimeout(function () { listing.classList.remove("drop-error"); }, 1600);
+      });
+  }
+
   document.addEventListener("click", function (e) {
+    var toggle = e.target.closest ? e.target.closest(".round-toggle") : null;
+    if (toggle) {
+      toggleRound(toggle.closest(".listing"));
+      return;
+    }
     if (e.target.closest && (e.target.closest(".listing-link") || e.target.closest(".archive-prompt"))) return;
     var listing = e.target.closest ? e.target.closest(".listing[data-id]") : null;
     if (!listing) return;

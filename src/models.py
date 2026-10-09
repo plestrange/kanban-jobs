@@ -14,6 +14,9 @@ STAGES = [
     "archived",
 ]
 
+# Stages that are an interview round — the only ones a round can be marked done in.
+ROUND_STAGES = ["informational", "technical", "take-home", "panel"]
+
 TIERS = ["strong", "good", "out"]
 
 ARCHIVE_REASONS = ["passed", "rejected", "withdrew", "expired", "other"]
@@ -23,6 +26,13 @@ def _parse_date(value) -> date:
     if isinstance(value, date):
         return value
     return date.fromisoformat(value)
+
+
+def _history_dict(h: HistoryEntry) -> dict:
+    data: dict = {"occurred": h.occurred, "recorded": h.recorded, "to": h.to, "note": h.note}
+    if h.completed:  # omitted when false, so files written before the field are unchanged
+        data["completed"] = True
+    return data
 
 
 @dataclass
@@ -60,6 +70,7 @@ class HistoryEntry:
     recorded: date
     to: str
     note: str = ""
+    completed: bool = False  # marks the round in `to` done; same `to` as the entry before it
 
 
 @dataclass
@@ -129,6 +140,7 @@ class Listing:
                 recorded=_parse_date(h["recorded"]),
                 to=h["to"],
                 note=h.get("note", ""),
+                completed=bool(h.get("completed", False)),
             )
             for h in (data.get("history") or [])
         ]
@@ -208,10 +220,7 @@ class Listing:
             "company_summary": self.company_summary,
             "stage": self.stage,
             "reason": self.reason,
-            "history": [
-                {"occurred": h.occurred, "recorded": h.recorded, "to": h.to, "note": h.note}
-                for h in self.history
-            ],
+            "history": [_history_dict(h) for h in self.history],
             "contacts": [{"name": c.name, "role": c.role, "note": c.note} for c in self.contacts],
             "referral": {
                 "status": self.referral.status,

@@ -12,7 +12,7 @@
     </div>
     <div class="detail-badges">
       <span class="tier-badge tier-{{ listing.assessment.tier }}">{{ listing.assessment.tier }}</span>
-      <span class="chip">{{ listing.stage.replace('-', ' ') }}</span>
+      <span class="chip">{{ listing.stage.replace('-', ' ') }}{% if listing is round_done %} ✓ done{% endif %}</span>
       {% if listing.stage == 'archived' %}<span class="chip">reason: {{ listing.reason }}</span>{% endif %}
       <span class="days">{{ listing | days_in_stage(today) }} days</span>
     </div>
@@ -82,7 +82,7 @@
     <ol class="timeline" id="timeline">
       {% for h in listing.history %}
       <li class="timeline-row" data-index="{{ loop.index0 }}">
-        <span class="timeline-to">{{ h.to.replace('-', ' ') }}</span>
+        <span class="timeline-to">{{ h.to.replace('-', ' ') }}{% if h.completed %} ✓ done{% endif %}</span>
         <input type="date" class="h-occurred" value="{{ h.occurred.isoformat() }}" max="{{ h.recorded.isoformat() }}">
         <input type="text" class="h-note" placeholder="Note (optional)" value="{{ h.note }}">
         <span class="timeline-recorded">recorded {{ h.recorded.isoformat() }}</span>

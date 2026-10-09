@@ -54,6 +54,21 @@ def test_interview_board_sorts_oldest_first_within_a_column():
     assert [c.id for c in columns["applied"]] == ["older", "tie-a", "tie-b", "newer"]
 
 
+def test_interview_board_puts_done_rounds_below_unfinished():
+    def done(id_, company, entered, finished):
+        listing = _listing(id_, company, "panel", entered)
+        listing.history.append(
+            HistoryEntry(occurred=finished, recorded=finished, to="panel", completed=True)
+        )
+        return listing
+
+    done_old = done("done-old", "Alpha Co", date(2026, 8, 1), date(2026, 8, 20))
+    done_new = done("done-new", "Beta Co", date(2026, 9, 1), date(2026, 9, 8))
+    pending = _listing("pending", "Zeta Co", "panel", date(2026, 9, 9))
+    columns = interview_board([done_new, pending, done_old], today=date(2026, 9, 10))
+    assert [c.id for c in columns["panel"]] == ["pending", "done-old", "done-new"]
+
+
 def test_queue_sorts_by_tier_then_comp():
     ordered = queue(load_listings(root=FIXTURES))
     assert [c.id for c in ordered] == ["umbrella-mlops", "hooli-ml-eng"]

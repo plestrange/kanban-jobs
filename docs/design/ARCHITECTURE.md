@@ -471,9 +471,13 @@ with no migration.
 **oldest first** — longest `days_in_stage` at the top, ties broken on company
 name so the sort is stable.
 
+**Done rounds sit below unfinished ones** (§5.7), each group oldest first — so a
+column reads as "rounds still ahead of you" over "rounds you're waiting to hear
+back on."
+
 That is the entire rule, and it has the property a filing cabinet needs: it never
 reshuffles. Oldest-first within a stage is just entry order into that stage, so a
-listing only moves when you move it. Open the Interview Board tomorrow and
+listing only moves when you move it or mark its round done. Open the Interview Board tomorrow and
 everything is where you left it.
 
 **`pinned` was cut.** It survived the §5.5 pass on the argument that it's an
@@ -488,6 +492,34 @@ handful of listings each, everything is on screen; drag-to-reorder earns its
 keep on a forty-listing board where sorting is how you cope with not seeing
 everything. It also means the drag handler never has to tell a reorder from a
 move, which is where most kanban drag bugs live (§6.2).
+
+### 5.7 Marking a round done
+
+A stage records which round you've reached, not whether you've sat it — so
+`panel · 12 days` used to mean either "onsite next week" or "onsite done ten days
+ago, waiting on an answer." In the four round stages (`informational`,
+`technical`, `take-home`, `panel`) a listing can be marked **done**:
+
+```yaml
+stage: panel
+history:
+  - {occurred: 2026-09-22, recorded: 2026-09-22, to: panel, note: ""}
+  - {occurred: 2026-10-07, recorded: 2026-10-08, to: panel, note: "onsite", completed: true}
+```
+
+It's a history entry, not a field: `pipeline.complete()` appends one with the same
+`to` as the current stage and `completed: true`. Because it becomes `history[-1]`,
+`days_in_stage` counts from when the round finished with no change to how it's
+computed, `history[-1].to` still equals `stage`, and the date is backdatable the
+same way any entry is (§5.2). The next `move()` appends an ordinary entry, which
+clears it. `completed` is omitted from the file when false.
+
+**Undo pops the entry** — `pipeline.uncomplete()`, only while the completed entry
+is still `history[-1]`. It's the one place history loses an entry, and it's
+limited to undoing a click, before anything else has been recorded on top of it.
+
+This isn't a flag in the §5.5 sense: it records a fact you supply (you finished
+the round), not a judgment the tool makes about a day count.
 
 ---
 
@@ -516,11 +548,14 @@ def review(listing_id, interested, root=DATA_DIR) -> Listing  # listings/ -> int
 
 # src/pipeline.py — the only place stage changes
 def move(listing, to_stage, reason=None, note="", occurred=today) -> Listing
+def complete(listing, note="", occurred=today) -> Listing    # mark the current round done (§5.7)
+def uncomplete(listing) -> Listing                           # undo complete()
+def round_done(listing) -> bool                              # history[-1].completed
 def amend(listing, index: int, occurred: date = None, note: str = None) -> Listing
 
 # src/views.py — everything derived
 def days_in_stage(listing: Listing, today: date) -> int              # history[-1].occurred
-def interview_board(listings: list[Listing]) -> dict[Stage, list[Listing]]  # columns, oldest first
+def interview_board(listings: list[Listing]) -> dict[Stage, list[Listing]]  # columns, done last, oldest first
 def queue(listings: list[Listing]) -> list[Listing]                  # listings/, sorted for review
 ```
 
@@ -596,7 +631,8 @@ normal resting state and should say so, not look broken.
 Seven columns, drag-and-drop between them, the archive lane collapsed below or
 behind a toggle. Listing face shows company, title, days-in-stage, and a badge
 when `referral.status` is anything but `none` — a referral changes the odds
-enough to be worth seeing without opening the listing. Click opens detail:
+enough to be worth seeing without opening the listing. Cards in a round stage
+carry a **Mark done** / **✓ done** toggle (§5.7). Click opens detail:
 history timeline, contacts, referral, notes, the original Why / Gap, link to
 the posting.
 
@@ -619,6 +655,8 @@ GET    /api/interview-board                 -> JSON, for client refresh
 GET    /api/listings                        -> JSON queue
 POST   /api/listings/<id>/review            -> {interested: bool, note?} — the seam
 PATCH  /api/interview-board/<id>/stage      -> {to, reason?, note, occurred?} — drag-drop
+POST   /api/interview-board/<id>/complete   -> {note?, occurred?} — mark the round done
+DELETE /api/interview-board/<id>/complete   -> undo it
 PATCH  /api/interview-board/<id>/history/<i> -> {occurred?, note?} — correct a past entry
 PATCH  /api/interview-board/<id>            -> notes, contacts, referral
 ```

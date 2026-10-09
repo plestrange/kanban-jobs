@@ -2,7 +2,7 @@
 {% block title %}Interview Board — Kanban Jobs{% endblock %}
 
 {% block content %}
-<div class="board">
+<div class="board" data-round-stages="{{ round_stages | join(' ') }}">
   {% for stage in board_stages %}
   <section class="col">
     <header class="col-head">
@@ -11,13 +11,15 @@
     </header>
     <div class="col-body" data-dropzone data-stage="{{ stage }}">
       {% for listing in columns[stage] %}
-      <article class="listing" draggable="true" data-id="{{ listing.id }}" data-stage="{{ stage }}" data-mtime="{{ mtimes[listing.id] }}">
+      {% set done = listing is round_done %}
+      <article class="listing{% if done %} is-done{% endif %}" draggable="true" data-id="{{ listing.id }}" data-stage="{{ stage }}" data-mtime="{{ mtimes[listing.id] }}" data-days="{{ listing | days_in_stage(today) }}">
         <div class="listing-co">{{ listing.company }}</div>
         <div class="listing-ti">{{ listing.title }}</div>
         {% if listing.url %}<a class="listing-link" href="{{ listing.url }}" target="_blank" rel="noopener">Posting ↗</a>{% endif %}
         <div class="listing-foot">
           <span class="days">{{ listing | days_in_stage(today) }} days</span>
           {% if listing.referral.status != 'none' %}<span class="badge-referral">referral</span>{% endif %}
+          <button type="button" class="round-toggle" {% if stage not in round_stages %}hidden{% endif %} title="{{ 'Undo — round not done' if done else 'Mark this round done' }}">{{ '✓ done' if done else 'Mark done' }}</button>
         </div>
       </article>
       {% endfor %}
